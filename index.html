@@ -1,0 +1,2957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Would You Rather: CaseOh Mode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE: late-night hangout, loud and playful, a kid's game night
+   IDEA: a neon diner booth after midnight, two plates on the table, one has to go
+   PICTURE: menu: a hungry cartoon gamer about to chomp the rainbow title; game: two foods head to head, a sword slays the loser
+   COLOUR and TYPE: deep teal booth ground, coral, butter yellow, sky, lime, pink; Bungee signage + Outfit
+   LAYOUT: menu screen, then the matchup fills the screen, then the leaderboard */
+:root{color-scheme:dark;--bg:#0b2e33;--panel:#134148;--panel2:#185058;--ink:#fdf3e1;--mute:#a7c9c5;--hot:#ff5b6e;--sun:#ffd25e}
+:root[data-theme=light]{color-scheme:dark}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;min-height:100vh;color:var(--ink);font:16px/1.55 Outfit,system-ui,sans-serif;overflow-x:clip;
+background:radial-gradient(circle at 12% 8%,#1f6168 0,transparent 42%),radial-gradient(circle at 92% 70%,#5b2a35 0,transparent 45%),var(--bg)}
+body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:90px;pointer-events:none;opacity:.5;z-index:-1;
+background:repeating-conic-gradient(#0f3a40 0 25%,#0b2e33 0 50%) 0 0/36px 36px;mask:linear-gradient(transparent,#000)}
+.band{max-width:980px;margin:0 auto;padding:clamp(20px,3.5vw,44px) max(4vw,14px)}
+[hidden]{display:none!important}
+.emo{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;line-height:1}
+.btn{font:600 15px Outfit,sans-serif;color:var(--ink);background:#ffffff12;border:1.5px solid #ffffff26;border-radius:12px;min-height:44px;padding:0 16px;cursor:pointer}
+.btn:hover{background:#ffffff22}.btn:disabled{opacity:.4;cursor:default}
+.btn.go{background:var(--hot);border-color:var(--hot);color:#fff;font-weight:800;font-size:17px;padding:0 26px}
+:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
+
+/* menu */
+.menu{text-align:center;padding-top:10px}
+.titlewrap{position:relative;display:inline-block;padding-top:clamp(96px,20vw,150px);margin-bottom:10px}
+.blob{position:absolute;left:50%;top:0;width:clamp(130px,26vw,190px);transform:translateX(-50%) rotate(8deg);transform-origin:50% 90%;animation:lean 2.4s ease-in-out infinite;filter:drop-shadow(0 12px 16px #0008)}
+.blob .jaw{transform-origin:80px 84px;animation:chomp .9s ease-in-out infinite}
+@keyframes lean{50%{transform:translateX(-50%) rotate(14deg) translateY(10px)}}
+@keyframes chomp{50%{transform:scaleY(.45)}}
+.wyr{font:400 clamp(40px,10vw,92px)/.95 Bungee,Outfit,sans-serif;margin:0;letter-spacing:.01em;text-wrap:balance}
+.wyr span{display:inline-block;animation:wave 2.2s ease-in-out infinite;text-shadow:0 4px 0 #0006,0 0 22px currentColor}
+@keyframes wave{50%{transform:translateY(-7px)}}
+.modehead{font:400 clamp(18px,3vw,24px) Bungee,sans-serif;color:var(--mute);margin:8px 0 0}
+.intro{max-width:560px;margin:18px auto 0;font-size:17px;color:var(--ink)}
+.parade{overflow:hidden;margin:24px -4vw 0;mask:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.parade div{display:flex;gap:22px;width:max-content;font-size:38px;animation:slide 40s linear infinite}
+@keyframes slide{to{transform:translateX(-50%)}}
+.modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:28px 0 0;text-align:left}
+.mode{font:inherit;color:inherit;cursor:pointer;padding:20px;border-radius:22px;border:2px solid #ffffff18;background:linear-gradient(160deg,var(--panel2),var(--panel));display:grid;gap:6px;min-height:150px;align-content:start}
+.mode .emo{font-size:40px}.mode b{font:400 20px Bungee,sans-serif}.mode span{font-size:15px;color:var(--mute)}
+.mode.main{border-color:var(--hot);box-shadow:0 0 0 3px #ff5b6e44,0 0 40px #ff5b6e55;animation:glow 2s ease-in-out infinite}
+.mode.main:hover{transform:translateY(-4px)}
+.mode:disabled{opacity:.5;cursor:default}
+@keyframes glow{50%{box-shadow:0 0 0 3px #ff5b6e66,0 0 60px #ff5b6e88}}
+.how{margin:26px auto 0;max-width:620px;color:var(--mute);font-size:15px}
+.sound{position:fixed;right:14px;bottom:14px;z-index:10;display:flex;gap:8px}
+.sound .btn{border-radius:30px;background:#0b2e33e6;backdrop-filter:blur(6px);font-size:14px;padding:0 14px}
+main{padding-bottom:70px}
+
+/* game */
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.top h1{font:400 clamp(22px,4vw,32px)/1.05 Bungee,sans-serif;margin:0;color:var(--sun);flex:1 1 auto}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:18px 0 14px}
+.round{font:400 20px/1.1 Bungee,sans-serif;color:var(--hot)}
+.count{color:var(--mute);font-size:15px;white-space:nowrap}
+.prog{flex:1 1 160px;height:10px;border-radius:9px;background:#ffffff14;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--hot),var(--sun));transition:width .4s}
+.bye{min-height:22px;color:var(--mute);font-size:14px;margin:0 0 10px}
+.arena{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 64px minmax(0,1fr);align-items:stretch;gap:10px}
+.card{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+font:inherit;color:inherit;text-align:center;cursor:pointer;padding:24px 16px 22px;border-radius:26px;min-height:330px;
+background:linear-gradient(160deg,var(--panel2),var(--panel));border:2px solid #ffffff18;box-shadow:0 18px 40px #0006,inset 0 1px 0 #ffffff1f;
+transition:transform .18s,border-color .18s,box-shadow .18s;animation:pop .35s both}
+.card:hover{transform:translateY(-5px);border-color:var(--hot)}
+.plate{display:grid;place-items:center;width:clamp(110px,24vw,180px);aspect-ratio:1;border-radius:50%;
+background:radial-gradient(circle at 35% 30%,#ffffff30,transparent 60%),var(--c);box-shadow:inset 0 -10px 0 #0002,0 14px 24px #0006}
+.plate .emo{font-size:clamp(52px,11vw,88px);filter:drop-shadow(0 6px 6px #0006);white-space:nowrap}
+.card b{font-size:clamp(17px,2.6vw,23px);line-height:1.2;text-wrap:balance}
+.tag{font-size:13px;font-weight:600;padding:3px 10px;border-radius:20px;background:#0003;color:var(--mute)}
+.key{position:absolute;top:12px;font-size:13px;color:#ffffff55}.card:first-child .key{left:16px}.card:last-child .key{right:16px}
+.vs{align-self:center;justify-self:center;display:grid;place-items:center;width:60px;height:60px;border-radius:50%;
+background:var(--hot);color:#fff;font:400 18px Bungee,sans-serif;box-shadow:0 0 0 6px #ff5b6e33,0 0 30px #ff5b6e88}
+.card.win{transform:scale(1.04);border-color:var(--sun);box-shadow:0 0 0 3px var(--sun),0 0 50px #ffd25e66}
+.card.cut{animation:die .6s .12s forwards;pointer-events:none}
+.card.cut::after{content:"";position:absolute;left:-15%;top:50%;width:130%;height:7px;border-radius:7px;
+background:linear-gradient(90deg,transparent,#fff,var(--hot),transparent);transform:rotate(-32deg) scaleX(0);animation:slash .18s forwards}
+.ko{position:absolute;inset:auto 0 42%;font:400 34px Bungee,sans-serif;color:var(--hot);opacity:0;animation:ko .5s .1s forwards;text-shadow:0 0 18px #ff5b6e}
+.sword{position:absolute;left:0;top:0;width:70px;pointer-events:none;opacity:0;z-index:5;filter:drop-shadow(0 0 14px #fff8)}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.95)}}
+@keyframes slash{to{transform:rotate(-32deg) scaleX(1)}}
+@keyframes ko{from{opacity:0;transform:scale(2)}to{opacity:1;transform:scale(1)}}
+@keyframes die{0%{transform:none}15%{transform:translateX(-8px) rotate(-3deg)}30%{transform:translateX(8px) rotate(2deg)}100%{transform:translateY(70px) rotate(14deg);opacity:0;filter:grayscale(1)}}
+.eater{position:absolute;left:0;top:0;width:clamp(130px,26vw,200px);opacity:0;z-index:6;pointer-events:none;filter:drop-shadow(0 10px 20px #000a)}
+.eater svg{width:100%;height:auto;display:block}.eater .jaw{transform-origin:80px 84px;animation:none}
+.wcrown{position:absolute;left:0;top:0;width:clamp(56px,12vw,84px);z-index:3;pointer-events:none;filter:drop-shadow(0 0 14px #ffd25e)}
+.wcrown svg{width:100%;height:auto;display:block}
+.fly{position:absolute;left:0;top:0;z-index:7;pointer-events:none;white-space:nowrap}
+.hint{text-align:center;color:var(--mute);font-size:14px;margin:18px 0 0}
+
+/* end */
+.champ{position:relative;text-align:center;padding:30px 20px;border-radius:30px;background:linear-gradient(160deg,#1d5a62,var(--panel));
+border:2px solid var(--sun);box-shadow:0 0 60px #ffd25e44;animation:pop .5s both}
+.champ .crown{width:90px;display:block;margin:0 auto 6px}
+.champ .plate{margin:0 auto}
+.champ small{display:block;font:400 18px Bungee,sans-serif;color:var(--hot);margin-top:14px}
+.champ h2{font:400 clamp(28px,5vw,44px)/1.05 Bungee,sans-serif;margin:6px 0;color:var(--sun);text-wrap:balance}
+.champ p{margin:0;color:var(--mute)}
+.champ{overflow:hidden}
+.podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:end;gap:clamp(6px,2vw,14px);max-width:640px;margin:6px auto 0}
+.pod{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0}
+.pod .who{display:flex;flex-direction:column;align-items:center;gap:6px;animation:pop .55s var(--w) both}
+.pod .plate{width:clamp(62px,15vw,108px)}.pod .plate .emo{font-size:clamp(22px,5vw,42px);letter-spacing:-.08em}
+.pod .crown{width:clamp(52px,12vw,80px);margin:0 0 -6px}
+.pod b{font-size:clamp(13px,2.4vw,17px);line-height:1.2;text-wrap:balance;overflow-wrap:anywhere}
+.blk{width:100%;border-radius:16px 16px 0 0;display:grid;place-items:start center;padding-top:10px;color:#3a2a12;font:400 clamp(32px,7vw,52px)/1 Bungee,sans-serif;
+transform-origin:bottom;animation:rise .7s var(--d) both cubic-bezier(.3,1.45,.5,1);box-shadow:inset 0 -14px 0 #0002,inset 0 2px 0 #fff8}
+.p1 .blk{height:clamp(130px,26vw,200px);background:linear-gradient(#ffe48a,#f0b429)}
+.p2 .blk{height:clamp(95px,19vw,150px);background:linear-gradient(#eef6f8,#a9bcc6)}
+.p3 .blk{height:clamp(70px,14vw,110px);background:linear-gradient(#f4b37e,#c9763c)}
+@keyframes rise{from{transform:scaleY(0)}}
+.conf{position:absolute;top:-20px;width:10px;height:16px;border-radius:3px;pointer-events:none;opacity:0;animation:fall 2.8s var(--d) ease-in forwards}
+@keyframes fall{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--x),560px) rotate(var(--r))}}
+.champ .podtxt{margin-top:18px;animation:pop .5s 3s both}
+
+h3{font:400 22px Bungee,sans-serif;margin:32px 0 12px}
+ol{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+li{display:grid;grid-template-columns:40px 40px minmax(0,1fr) 84px;align-items:center;gap:10px;padding:10px 14px;border-radius:14px;background:#ffffff0d}
+li .rk{font:400 18px Bungee,sans-serif;color:var(--mute);text-align:right}
+li:nth-child(-n+3) .rk{color:var(--sun)}
+li .emo{font-size:28px;text-align:center;white-space:nowrap;overflow:hidden}
+li .nm{font-weight:600;line-height:1.25}li .nm span{display:block;font-size:13px;font-weight:400;color:var(--mute)}
+li .w{font-size:14px;color:var(--mute);text-align:right;white-space:nowrap}
+li .m{grid-column:3/5;height:6px;border-radius:6px;background:#ffffff12;overflow:hidden}
+li .m i{display:block;height:100%;background:linear-gradient(90deg,var(--hot),var(--sun))}
+details summary{cursor:pointer;margin:14px 0;color:var(--sun);font-weight:600;min-height:44px;display:flex;align-items:center}
+.past{display:flex;flex-wrap:wrap;gap:8px}.past span{padding:6px 12px;border-radius:20px;background:#ffffff12;font-size:14px}
+.again{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:22px}
+@media(max-width:600px){.modes{grid-template-columns:minmax(0,1fr)}.mode{min-height:0}
+.arena{grid-template-columns:minmax(0,1fr) 40px minmax(0,1fr);gap:6px}
+.card{min-height:250px;padding:20px 8px 16px;border-radius:20px}.vs{width:42px;height:42px;font-size:13px}.key{display:none}
+li{grid-template-columns:28px 30px minmax(0,1fr) 62px;gap:8px;padding:9px 10px}li .emo{font-size:22px}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-iteration-count:1!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="band">
+
+<section id="menu" class="menu">
+  <div class="titlewrap">
+    <svg class="blob" viewBox="0 0 160 150" aria-label="A hungry cartoon gamer about to eat the title">
+      <ellipse cx="80" cy="146" rx="62" ry="5" fill="#0005"/>
+      <path d="M14 150 Q12 98 80 94 Q148 98 146 150Z" fill="#2f6fd6"/>
+      <path d="M48 98 Q80 118 112 98 Q80 108 48 98Z" fill="#2559b0"/>
+      <path d="M70 106 v18 M90 106 v18" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="80" cy="64" r="42" fill="#f8d5bd"/>
+      <ellipse cx="54" cy="76" rx="9" ry="6" fill="#f4a3a3" opacity=".7"/><ellipse cx="106" cy="76" rx="9" ry="6" fill="#f4a3a3" opacity=".7"/>
+      <path d="M40 58 Q40 18 80 18 Q120 18 120 58 Q112 34 92 36 Q86 28 74 34 Q50 32 40 58Z" fill="#d9692b"/>
+      <path d="M40 70 Q42 116 80 118 Q118 116 120 70 Q112 100 80 102 Q48 100 40 70Z" fill="#c95a22"/>
+      <path d="M36 66 Q34 12 80 12 Q126 12 124 66" stroke="#1b1b1b" stroke-width="8" fill="none" stroke-linecap="round"/>
+      <rect x="26" y="52" width="16" height="28" rx="7" fill="#1b1b1b"/><rect x="118" y="52" width="16" height="28" rx="7" fill="#1b1b1b"/>
+      <circle cx="66" cy="58" r="9" fill="#fff"/><circle cx="94" cy="58" r="9" fill="#fff"/>
+      <circle cx="68" cy="62" r="4.5" fill="#1b1b1b"/><circle cx="96" cy="62" r="4.5" fill="#1b1b1b"/>
+      <path d="M56 45 l14 3 M104 45 l-14 3" stroke="#b3501d" stroke-width="4" stroke-linecap="round"/>
+      <g class="jaw"><ellipse cx="80" cy="92" rx="14" ry="11" fill="#7a1f2b"/><ellipse cx="80" cy="98" rx="8" ry="4" fill="#ff7a8a"/><path d="M70 85 h20 v4 h-20Z" fill="#fff"/></g>
+      <path d="M62 84 Q80 74 98 84 Q80 82 62 84Z" fill="#b3501d"/>
+      <circle cx="140" cy="104" r="10" fill="#f8d5bd"/>
+      <path d="M140 96 v-26 M134 70 v10 M140 68 v12 M146 70 v10 M134 80 h12" stroke="#d6dde2" stroke-width="3.5" stroke-linecap="round"/>
+    </svg>
+    <h1 class="wyr" id="wyr">WOULD YOU RATHER</h1>
+  </div>
+  <p class="modehead">The Food Bracket</p>
+  <p class="intro">Foods go head to head. You pick which one you'd rather eat, and the winner slays the loser with a sword. Keep going until only one food is left, then see the leaderboard.</p>
+  <div class="parade" aria-hidden="true"><div class="emo" id="parade"></div></div>
+  <div class="modes">
+    <button class="mode main" id="queso" type="button"><span class="emo">🎮</span><b>CaseOh Mode</b><span>CaseOh's 75 favourite foods. Find his number one.</span></button>
+    <button class="mode main" id="dessert" type="button"><span class="emo">🍰</span><b>Dessert Mode</b><span>175 sweet treats. Find the best dessert ever.</span></button>
+    <button class="mode main" id="allfoods" type="button"><span class="emo">🍔</span><b>All Foods</b><span>2,500 common foods. The ultimate showdown. Your progress saves, so you can stop and come back.</span></button>
+  </div>
+  <p class="how">Tap a food to pick it. Undo takes back your last pick. Music starts when you pick a mode. Every mode saves your spot, and Restart starts fresh.</p>
+  <p class="how"><b>Music not working?</b> Tap the music button in the corner to turn it off, then tap it again to turn it back on.</p>
+</section>
+
+<section id="game" hidden>
+  <div class="top"><h1 id="gtitle">CaseOh Mode</h1><button class="btn" id="home" type="button">Main menu</button></div>
+  <div class="bar">
+    <span class="round" id="round">Round 1</span>
+    <span class="count" id="count"></span>
+    <div class="prog"><i id="prog"></i></div>
+    <button class="btn" id="undo" type="button">Undo</button>
+    <button class="btn" id="restart" type="button">Restart</button>
+  </div>
+  <p class="bye" id="bye"></p>
+  <div class="arena" id="arena"></div>
+  <p class="hint">On a keyboard, use the left and right arrows. Music not working? Tap the music button to turn it off, then back on again.</p>
+</section>
+
+<section id="end" hidden>
+  <div class="champ" id="champ"></div>
+  <div class="again"><button class="btn go" id="again" type="button">Play again</button><button class="btn" id="home2" type="button">Main menu</button></div>
+  <h3>Leaderboard</h3>
+  <ol id="top"></ol>
+  <details><summary id="allsum">See every food</summary><ol id="rest"></ol></details>
+  <div id="pastwrap"></div>
+</section>
+
+</main>
+<div class="sound"><button class="btn" id="sfx" type="button" aria-pressed="true">💥 Sound FX on</button><button class="btn" id="music" type="button" aria-pressed="true">♪ Music on</button></div>
+
+<script>
+{
+const RAW=`Steakhouse burrito|m|🌯
+Shrimp Alfredo|m|🍤🍝
+Beef Maruchan ramen with Frank's RedHot|m|🍜🌶️
+Mushroom Swiss burger|m|🍄🍔
+Taco Bell Nacho Fries|m|🍟🧀
+Burger King jalapeño cheddar bites|m|🌶️🧀
+McDonald's fries|m|🍟
+McDonald's chicken tenders|m|🍗
+Poutine|m|🍟🥫
+Cheese pizza|m|🍕
+Cheesy Gordita Crunch|m|🌮🧀
+Wendy's spicy chicken sandwich|m|🍔🔥
+Hot dog|m|🌭
+Strawberry cheesecake|d|🍰🍓
+Waffle House hash brown bowl|m|🥔🧇
+Pancakes|m|🥞
+Shrimp chips|c|🍤
+Powdered donuts|d|🍩
+Little Debbie strawberry shortcake rolls|d|🍓🍥
+Oatmeal creme pies|d|🍪
+Cosmic Brownies|d|🌈🍫
+Dr Pepper|k|🥤
+Hawaiian Punch|k|🧃🌺
+Mama Case's peach tea|k|🍑🍵
+Red Bull Amber Edition|k|🥫⚡
+Strawberry milkshake|k|🍓🥤
+Butter pecan ice cream|d|🍨
+Cookies and cream ice cream|d|🍦🍪
+Oreos|d|🍪🥛
+Chips Ahoy|d|🍪
+GamerSupps Nuclear Bombsicle|k|☢️🍭
+GamerSupps Nuclear Bombsicle GG|k|👀🎮
+Chicken parmesan|m|🍗🧀
+Caesar salad|m|🥗
+Beefy 5-Layer Burrito|m|🌯🥩
+Gumbo|m|🍲
+Fresh birria tacos|m|🌮
+California rolls|m|🍣
+Marble soda (Ramune)|k|🫧🍾
+Biscuits and gravy|m|🍞🥣
+Corn dogs|m|🌽🌭
+Clam chowder|m|🥣🐚
+Fish and chips|m|🐟🍟
+Lo mein|m|🥡
+Crab rangoon|m|🦀🥟
+Crunchwrap Supreme|m|🌮🔄
+Sweet tea|k|🧊🍹
+Takis Fuego|c|🔥🌀
+Flamin' Hot Cheetos Puffs|c|🔥☁️
+Original Pringles|c|🥫🥔
+Sour Cream and Onion Pringles|c|🥫🧅
+Doritos Nacho Cheese|c|🔺🧀
+Flamin' Hot Cheetos|c|🌶️🔥
+Crunchy Cheetos|c|🧀
+Lay's Classic|c|🥔
+Lay's Barbecue|c|🥔🍖
+Original Ruffles|c|〰️🥔
+Ruffles Cheddar and Sour Cream|c|〰️🧀
+Funyuns|c|🧅
+Fritos|c|🌽
+Sun Chips Harvest Cheddar|c|☀️🧀
+Tostitos|c|🔺🥑
+Miss Vickie's Jalapeño|c|🌶️🥔
+MoonPie|d|🌕🍫
+Blueberry muffin|d|🫐🧁
+Glazed donut|d|🍩✨
+Apple pie|d|🍎🥧
+Funnel cake|d|🎡🍰
+Buttered popcorn|s|🍿
+Pretzel sticks|s|🥨
+Root beer float|k|🥤🍦
+Brownies|d|🍫
+Movie theater nachos|s|🧀🔺
+Sour Patch Kids|s|🍬
+White chocolate Kit Kat|s|🤍🍫`;
+const parse=r=>r.split('\n').map(l=>l.trim()).filter(l=>l.split('|').length===3).map((l,i)=>{const[n,c,e]=l.split('|');return{id:i,n,c,e}});
+const FOODS=parse(RAW);
+const DESS=parse(`Apple pie|p|🍎🥧
+Brownies|d|🍫
+Pumpkin pie|p|🎃🥧
+Carrot cake|e|🥕🍰
+Chocolate cake|e|🍫🎂
+Vanilla cake|e|🎂
+Strawberry cake|e|🍓🎂
+Cheesecake|e|🍰
+Funnel cake|p|🎡🍰
+Vanilla ice cream|i|🍨
+Chocolate ice cream|i|🍫🍨
+Strawberry ice cream|i|🍓🍨
+Butter pecan ice cream|i|🌰🍨
+Cookie dough ice cream|i|🍪🍨
+Chocolate chip cookie|o|🍪
+M&M cookie|o|🌈🍪
+Oreos|o|🍪🥛
+Chips Ahoy|o|🍪
+Reese's|y|🥜🍫
+Jell-O|d|🍓🟥
+Pudding|d|🍮
+Root beer float|d|🥤🍦
+Flan|d|🍮✨
+Bread pudding|d|🍞🍮
+Red velvet cake|e|❤️🎂
+Tres leches cake|e|🥛🍰
+Lemon cake|e|🍋🍰
+Coconut cake|e|🥥🍰
+Pineapple upside-down cake|e|🍍🍰
+German chocolate cake|e|🍫🥥
+Black Forest cake|e|🍒🍫
+Angel food cake|e|😇🍰
+Pound cake|e|🍰
+Ice cream cake|e|🍦🎂
+Funfetti cake|e|🎉🎂
+Molten lava cake|e|🌋🍫
+Tiramisu|e|☕🍰
+Strawberry shortcake|e|🍓🍰
+Coffee cake|e|☕🍰
+Banana bread|e|🍌🍞
+Marble cake|e|🌀🍰
+Oreo cheesecake|e|🍪🍰
+Cupcakes|e|🧁
+Red velvet cupcake|e|❤️🧁
+Cake pops|e|🍭🎂
+Swiss roll|e|🍥
+Chocolate mousse cake|e|🍫🍰
+Lemon bars|d|🍋🟨
+Blondies|d|🟫✨
+Mint chocolate chip ice cream|i|🌿🍨
+Rocky road ice cream|i|🪨🍨
+Neapolitan ice cream|i|🍓🍫
+Cookies and cream ice cream|i|🍦🍪
+Rainbow sherbet|i|🌈🍧
+Mango sorbet|i|🥭🍧
+Banana split|i|🍌🍨
+Hot fudge sundae|i|🍨🍒
+Ice cream sandwich|i|🍪🍦
+Drumstick cone|i|🍦🥜
+Choco Taco|i|🌮🍫
+Dippin' Dots|i|🔵🍨
+Milkshake|i|🥤🍦
+Oreo McFlurry|i|🍪🥤
+Dairy Queen Blizzard|i|🌪️🍦
+Frozen yogurt|i|🍦🍓
+Popsicle|i|🍡❄️
+Snow cone|i|🍧🌈
+Italian ice|i|🍋🍧
+Mochi ice cream|i|🍡🍨
+Gelato|i|🇮🇹🍨
+Affogato|i|☕🍨
+Waffle cone|i|🧇🍦
+Push Pop|i|🍭🌈
+Klondike bar|i|🐻‍❄️🍫
+Sugar cookie|o|🍪✨
+Snickerdoodle|o|🍪🤎
+Oatmeal raisin cookie|o|🍪🍇
+Peanut butter cookie|o|🥜🍪
+Double chocolate cookie|o|🍫🍪
+White chocolate macadamia cookie|o|🤍🍪
+Crumbl cookie|o|🩷🍪
+Gingerbread man|o|🧑‍🎄🍪
+Shortbread|o|🧈🍪
+Macarons|o|🌸🍬
+Fortune cookie|o|🥠
+Nutter Butter|o|🥜🍪
+Thin Mints|o|🌿🍫
+Samoas|o|🥥🍪
+Fig Newtons|o|🍪
+Nilla Wafers|o|🍪🍌
+Biscoff cookies|o|☕🍪
+Famous Amos|o|🍪🍪
+Lofthouse frosted cookie|o|🩷🍪
+Black and white cookie|o|⚫⚪
+Snickers|y|🍫🥜
+Kit Kat|y|🍫
+Twix|y|🍫🍫
+Milky Way|y|🌌🍫
+3 Musketeers|y|⚔️🍫
+Butterfinger|y|🧈🍫
+Hershey's bar|y|🍫
+Hershey's Kisses|y|💋🍫
+M&M's|y|🔴🟡
+Skittles|y|🌈🍬
+Starburst|y|⭐🍬
+Sour Patch Kids|y|😝🍬
+Gummy bears|y|🧸🍬
+Gummy worms|y|🪱🍬
+Swedish Fish|y|🐟🍬
+Nerds|y|🍬🌈
+Nerds Gummy Clusters|y|🌈🫧
+Airheads|y|🎈🍬
+Laffy Taffy|y|😂🍬
+Jolly Ranchers|y|💎🍬
+Twizzlers|y|🍓🍬
+Cotton candy|y|🍭☁️
+Ring Pop|y|💍🍭
+Warheads|y|😖🍋
+Jelly beans|y|🫘🌈
+Peeps|y|🐥
+Tootsie Rolls|y|🍫
+Almond Joy|y|🥥🍫
+Ferrero Rocher|y|🌰✨
+Toblerone|y|🔺🍫
+Cherry pie|p|🍒🥧
+Blueberry pie|p|🫐🥧
+Pecan pie|p|🌰🥧
+Key lime pie|p|🍈🥧
+Lemon meringue pie|p|🍋🥧
+Sweet potato pie|p|🍠🥧
+Chocolate cream pie|p|🍫🥧
+Banana cream pie|p|🍌🥧
+Coconut cream pie|p|🥥🥧
+Peach cobbler|p|🍑🥧
+Apple crisp|p|🍎🍂
+Churros|p|🥖✨
+Cinnamon rolls|p|🌀🍞
+Glazed donut|p|🍩
+Boston cream donut|p|🍩🍫
+Jelly donut|p|🍩🍓
+Krispy Kreme donut|p|🍩✨
+Beignets|p|🥐❄️
+Éclair|p|🥖🍫
+Cream puffs|p|☁️🥐
+Cannoli|p|🇮🇹🥐
+Baklava|p|🍯🥐
+Apple turnover|p|🍎🥐
+Danish|p|🥐🍓
+Toaster Strudel|p|🍓🥐
+S'mores|d|🔥🍫
+Rice Krispies Treat|d|🍚🟨
+Fudge|d|🍫🟫
+Caramel apple|d|🍎🍯
+Chocolate-covered strawberries|d|🍓🍫
+Chocolate fondue|d|🫕🍫
+Banana pudding|d|🍌🍮
+Rice pudding|d|🍚🍮
+Crème brûlée|d|🔥🍮
+Chocolate mousse|d|🍫☁️
+Panna cotta|d|🍮🍓
+Sopapillas|d|🍯🫓
+Fried Oreos|d|🍪🔥
+Deep-fried Twinkie|d|🧁🔥
+Belgian waffle with whipped cream|d|🧇🍓
+Nutella crêpes|d|🥞🍫
+Strawberry parfait|d|🍓🥛
+Trifle|d|🍰🍓
+Kettle corn|d|🍿✨
+Caramel popcorn|d|🍿🍯
+Puppy chow|d|🐶🍫
+Brookies|d|🍪🍫
+Honey bun|d|🍯🌀
+Little Debbie Cosmic Brownies|d|🌈🍫
+Zebra Cakes|d|🦓🍰
+Peanut butter pie|p|🥜🥧`);
+const EXTRA=`Apple|f|🍎
+Banana|f|🍌
+Strawberries|f|🍓
+Blueberries|f|🫐
+Raspberries|f|🍎
+Blackberries|f|🍎
+Grapes|f|🍇
+Green grapes|f|🍇
+Watermelon|f|🍉
+Cantaloupe|f|🍈
+Honeydew|f|🍈
+Pineapple|f|🍍
+Mango|f|🥭
+Peach|f|🍑
+Nectarine|f|🍑
+Plum|f|🍎
+Cherries|f|🍒
+Orange|f|🍊
+Mandarin orange|f|🍊
+Clementine|f|🍊
+Tangerine|f|🍊
+Blood orange|f|🍊
+Grapefruit|f|🍊
+Lemon|f|🍋
+Lime|f|🍋
+Kiwi|f|🥝
+Pear|f|🍐
+Pomegranate|f|🍎
+Papaya|f|🍎
+Coconut|f|🥥
+Dragon fruit|f|🐉
+Passion fruit|f|🍎
+Lychee|f|🍎
+Guava|f|🍎
+Figs|f|🍎
+Dates|f|🍎
+Apricot|f|🍑
+Cranberries|f|🍎
+Persimmon|f|🍎
+Star fruit|f|⭐
+Jackfruit|f|🍎
+Durian|f|🍎
+Plantains|f|🍌
+Green apple|f|🍏
+Honeycrisp apple|f|🍎
+Granny Smith apple|f|🍏
+Fuji apple|f|🍎
+Gala apple|f|🍎
+Red Delicious apple|f|🍎
+Pink Lady apple|f|🍎
+Rainier cherries|f|🍒
+Concord grapes|f|🍇
+Cotton candy grapes|f|🍇
+Mixed berries|f|🫐
+Fruit salad|f|🥗
+Dried mango|f|🥭
+Raisins|f|🍇
+Dried cranberries|f|🍎
+Prunes|f|🍎
+Banana chips|f|🍌
+Apple slices with peanut butter|f|🍎🥜
+Frozen grapes|f|🍇
+Mango with Tajín|f|🥭🌶️
+Watermelon with Tajín|f|🍉🌶️
+Fruit cup|f|🍎
+Applesauce|f|🍎
+Canned peaches|f|🍑
+Mandarin orange cups|f|🍊
+Kumquats|f|🍊
+Mulberries|f|🍎
+Gooseberries|f|🍎
+Boysenberries|f|🍎
+Huckleberries|f|🫐
+Tamarind|f|🍎
+Rambutan|f|🍎
+Mangosteen|f|🥭
+Cherimoya|f|🍎
+Soursop|f|🍎
+Avocado|f|🥑
+Pineapple chunks|f|🍍
+Chocolate-dipped banana|f|🍌🍫
+Frozen strawberries|f|🍓
+Fruit kabobs|f|🍢
+Cucumber with Tajín|f|🥒🌶️
+Broccoli|v|🥦
+Carrots|v|🥕
+Baby carrots|v|🥕
+Corn on the cob|v|🌽
+Green beans|v|🫛
+Peas|v|🫛
+Spinach|v|🥬
+Kale|v|🥬
+Cucumber|v|🥒
+Tomato|v|🍅
+Cherry tomatoes|v|🍅
+Bell pepper|v|🫑
+Red bell pepper|v|🫑
+Jalapeños|v|🌶️
+Red onion|v|🧅
+Mushrooms|v|🍄
+Portobello mushroom|v|🍄
+Zucchini|v|🥒
+Yellow squash|v|🥦
+Butternut squash|v|🎃
+Acorn squash|v|🎃
+Spaghetti squash|v|🍝
+Pumpkin|v|🎃
+Eggplant|v|🍆
+Cauliflower|v|🥦
+Brussels sprouts|v|🥦
+Cabbage|v|🥬
+Red cabbage|v|🥬
+Celery|v|🥦
+Asparagus|v|🥦
+Artichoke|v|🥦
+Beets|v|🥦
+Radishes|v|🥦
+Turnips|v|🥦
+Sweet potato|v|🍠
+Baked potato|v|🥔
+Okra|v|🥦
+Collard greens|v|🥬
+Mustard greens|v|🥬
+Bok choy|v|🥬
+Snow peas|v|🫛
+Sugar snap peas|v|🫛
+Edamame|v|🫛
+Bean sprouts|v|🫘
+Leeks|v|🥦
+Green onions|v|🧅
+Parsnips|v|🥦
+Jicama|v|🥦
+Arugula|v|🥬
+Romaine lettuce|v|🥬
+Iceberg lettuce|v|🥬
+Pickles|v|🥒
+Dill pickle spear|v|🥒
+Sauerkraut|v|🥬
+Roasted red peppers|v|🫑
+Grilled vegetables|v|🥦
+Steamed broccoli|v|🥦
+Roasted Brussels sprouts|v|🥦
+Glazed carrots|v|🥕
+Creamed spinach|v|🥬
+Sautéed mushrooms|v|🍄
+Roasted cauliflower|v|🥦
+Grilled corn|v|🌽
+Fried okra|v|🥦
+Fried green tomatoes|v|🍅
+Black beans|v|🫘
+Pinto beans|v|🫘
+Kidney beans|v|🫘
+Chickpeas|v|🫘
+Lentils|v|🫘
+Creamed corn|v|🌽
+Sweet corn|v|🌽
+Hearts of palm|v|🥦
+Water chestnuts|v|🌰
+Grilled asparagus|v|🥦
+Roasted beets|v|🥦
+Stuffed bell peppers|v|🫑
+Fried cauliflower bites|v|🥦
+Scrambled eggs|b|🥚
+Fried eggs|b|🥚
+Sunny-side up eggs|b|🥚
+Over easy eggs|b|🥚
+Hard-boiled eggs|b|🥚
+Soft-boiled eggs|b|🥚
+Poached eggs|b|🥚
+Omelette|b|🍳
+Cheese omelette|b|🍳
+Western omelette|b|🍳
+Veggie omelette|b|🍳
+Eggs Benedict|b|🥚
+Breakfast burrito|b|🌯
+Breakfast sandwich|b|🥪
+Bacon egg and cheese sandwich|b|🥓🥚
+Sausage egg and cheese biscuit|b|🌭
+Bacon|b|🥓
+Turkey bacon|b|🥓
+Sausage links|b|🌭
+Sausage patties|b|🌭
+Ham steak|b|🍖
+Canadian bacon|b|🥓
+Hash browns|b|🥔
+Home fries|b|🥔
+Buttermilk pancakes|b|🥞
+Blueberry pancakes|b|🫐🥞
+Chocolate chip pancakes|b|🍫
+Banana pancakes|b|🥞
+Silver dollar pancakes|b|🥞
+Waffles|b|🧇
+Chicken and waffles|b|🍗🧇
+Eggo waffles|b|🧇
+French toast|b|🍞
+Stuffed French toast|b|🍞
+French toast sticks|b|🍞
+Crêpes|b|🥞
+Grits|b|🥣
+Cheese grits|b|🧀
+Oatmeal|b|🥣
+Overnight oats|b|🥣
+Cream of Wheat|b|🥣
+Granola|b|🥣
+Yogurt parfait|b|🥛
+Greek yogurt|b|🥛
+Strawberry yogurt|b|🍓
+Avocado toast|b|🥑
+Toast with butter|b|🍞
+Toast with jam|b|🍞
+Cinnamon toast|b|🍞
+Peanut butter toast|b|🥜
+Bagel with cream cheese|b|🧀
+Everything bagel|b|🥯
+Lox and bagel|b|🥯🐟
+Breakfast tacos|b|🌮
+Corned beef hash|b|🥩
+Steak and eggs|b|🥩
+Country fried steak|b|🥩
+Quiche|b|🥧
+Quiche Lorraine|b|🥧
+Frittata|b|🍳
+Breakfast casserole|b|🍳
+Dutch baby pancake|b|🥞
+Acai bowl|b|🫐
+Smoothie bowl|b|🥤
+Pop-Tarts|b|🟫
+Frosted Strawberry Pop-Tarts|b|🍓
+Brown Sugar Cinnamon Pop-Tarts|b|🟫
+Breakfast pizza|b|🍕
+Pancake and sausage on a stick|b|🥞
+Egg bites|b|🥚
+Sausage gravy and toast|b|🍞
+Cinnamon roll pancakes|b|🥞
+Red velvet pancakes|b|🥞
+Pumpkin pancakes|b|🥞
+Breakfast bowl|b|🥣
+Cheerios|b|🥣
+Honey Nut Cheerios|b|🐝🥣
+Frosted Flakes|b|🐯🥣
+Froot Loops|b|🌈🥣
+Lucky Charms|b|🍀🥣
+Cinnamon Toast Crunch|b|🥣
+Cap'n Crunch|b|🥣
+Crunch Berries|b|🥣
+Cocoa Puffs|b|🥣
+Reese's Puffs|b|🥜🥣
+Trix|b|🥣
+Apple Jacks|b|🥣
+Corn Flakes|b|🥣
+Rice Krispies|b|🥣
+Cocoa Krispies|b|🥣
+Raisin Bran|b|🥣
+Frosted Mini-Wheats|b|🥣
+Fruity Pebbles|b|🌈🥣
+Cocoa Pebbles|b|🥣
+Golden Grahams|b|🥣
+Honey Bunches of Oats|b|🥣
+Special K|b|🥣
+Kix|b|🥣
+Corn Pops|b|🥣
+Honey Smacks|b|🥣
+Cookie Crisp|b|🍪🥣
+Count Chocula|b|🥣
+Life cereal|b|🥣
+Rice Chex|b|🥣
+Wheaties|b|🥣
+Oreo O's|b|🍪🥣
+Krave|b|🥣
+Cinnamon Life|b|🥣
+Honey Comb|b|🥣
+Golden Crisp|b|🥣
+French Toast Crunch|b|🥣
+Cheerios Apple Cinnamon|b|🥣
+Frosted Cheerios|b|🥣
+White bread|r|🍞
+Wheat bread|r|🍞
+Sourdough bread|r|🍞
+Rye bread|r|🍞
+Pumpernickel|r|🍞
+Brioche|r|🍞
+Challah|r|🍞
+Ciabatta|r|🍞
+Focaccia|r|🍞
+French baguette|r|🥖
+Garlic bread|r|🧄🍞
+Cheesy garlic bread|r|🧄
+Texas toast|r|🍞
+Dinner rolls|r|🍞
+Hawaiian rolls|r|🍞
+Croissant|r|🥐
+Chocolate croissant|r|🥐
+Bagel|r|🥯
+Blueberry bagel|r|🥯
+Cinnamon raisin bagel|r|🥯
+English muffin|r|🧁
+Pita bread|r|🍞
+Naan|r|🫓
+Garlic naan|r|🫓
+Flour tortillas|r|🫓
+Corn tortillas|r|🫓
+Cornbread|r|🍞
+Buttermilk biscuits|r|🍞
+Cheddar Bay Biscuits|r|🍞
+Soft pretzel|r|🥨
+Pretzel bites|r|🥨
+Breadsticks|r|🥖
+Monkey bread|r|🍞
+Zucchini bread|r|🍞
+Pumpkin bread|r|🍞
+Irish soda bread|r|🍞
+Banana nut muffin|r|🧁
+Corn muffin|r|🧁
+Chocolate chip muffin|r|🧁
+Bran muffin|r|🧁
+Popovers|r|🍞
+Yorkshire pudding|r|🍮
+Scones|r|🍞
+Crumpets|r|🍞
+Hot cross buns|r|🍞
+Parker House rolls|r|🍞
+Pull-apart bread|r|🍞
+Garlic knots|r|🧄
+Bread bowl|r|🍞
+Roti|r|🫓
+Paratha|r|🫓
+Lavash|r|🫓
+Pretzel buns|r|🥨
+Sweet Hawaiian bread|r|🍞
+Cheese bread|r|🧀
+Jalapeño cheddar bread|r|🍞
+Olive bread|r|🍞
+Cinnamon swirl bread|r|🍞
+Hamburger|w|🍔
+Cheeseburger|w|🍔
+Double cheeseburger|w|🍔
+Bacon cheeseburger|w|🍔🥓
+Smash burger|w|🍔
+Turkey burger|w|🍔
+Veggie burger|w|🍔
+Black bean burger|w|🍔
+Impossible Burger|w|🍔
+Patty melt|w|🥪
+Sliders|w|🥪
+BBQ burger|w|🍔
+Jalapeño burger|w|🍔
+Guacamole burger|w|🍔
+Blue cheese burger|w|🍔
+Grilled cheese sandwich|w|🥪
+Grilled cheese with tomato soup|w|🧀
+BLT|w|🥓🥬
+Club sandwich|w|🥪
+Turkey sandwich|w|🥪
+Ham and cheese sandwich|w|🥪
+Peanut butter and jelly|w|🥜🍇
+Peanut butter and banana sandwich|w|🥜🍌
+Fluffernutter|w|🥜
+Tuna salad sandwich|w|🥪
+Chicken salad sandwich|w|🥪
+Egg salad sandwich|w|🥪
+Philly cheesesteak|w|🧀
+Chicken cheesesteak|w|🍗
+Italian sub|w|🥖
+Meatball sub|w|🍝
+Chicken parm sub|w|🍗
+Roast beef sandwich|w|🥪
+French dip|w|🥣
+Reuben|w|🥪
+Pastrami on rye|w|🥪
+Cuban sandwich|w|🥪
+Po' boy|w|🥪
+Shrimp po' boy|w|🍤
+Muffuletta|w|🥪
+Monte Cristo|w|🥪
+Croque monsieur|w|🥪
+Pulled pork sandwich|w|🥪
+Brisket sandwich|w|🥪
+Sloppy Joe|w|🥪
+Fried chicken sandwich|w|🥪
+Nashville hot chicken sandwich|w|🔥🍗
+Grilled chicken sandwich|w|🥪
+Buffalo chicken sandwich|w|🥪
+Chicken wrap|w|🌯
+Buffalo chicken wrap|w|🌯
+Chicken Caesar wrap|w|🌯
+Turkey wrap|w|🌯
+Fish sandwich|w|🥪
+Lobster roll|w|🦞
+Crab cake sandwich|w|🥪
+Chili dog|w|🌶️
+Chicago-style hot dog|w|🌭
+Bratwurst|w|🌭
+Italian sausage sandwich|w|🌭
+Polish sausage|w|🌭
+Sausage and peppers|w|🌭🫑
+Caprese sandwich|w|🥪
+Panini|w|🥪
+Turkey club|w|🦃
+Bologna sandwich|w|🥪
+Fried bologna sandwich|w|🥪
+Cucumber sandwich|w|🥪
+Juicy Lucy|w|🍔
+Butter burger|w|🍔
+Steak sandwich|w|🥪
+Chopped cheese|w|🧀
+Beef on weck|w|🥩
+Hot brown|w|🥪
+Italian beef|w|🥩
+Tuna melt|w|🐟
+Open-faced turkey sandwich|w|🥪
+Mushroom Swiss chicken sandwich|w|🥪
+Chicken bacon ranch sandwich|w|🥪
+Pimento cheese sandwich|w|🥪
+Cheesesteak hoagie|w|🥖
+Hoagie|w|🥖
+Breakfast bagel sandwich|w|🥪
+Fried fish sandwich|w|🥪
+Ham salad sandwich|w|🥪
+BBQ chicken sandwich|w|🥪
+Chicken pesto panini|w|🍗
+Smoked turkey sandwich|w|🥪
+Double-decker burger|w|🍔
+Mac and cheese burger|w|🍔
+Fried egg burger|w|🍔
+Pineapple teriyaki burger|w|🍔
+Pepperoni pizza|z|🍕
+Sausage pizza|z|🌭
+Supreme pizza|z|🍕
+Meat lover's pizza|z|🍕
+Veggie pizza|z|🍕
+Hawaiian pizza|z|🍍🍕
+Margherita pizza|z|🍕
+BBQ chicken pizza|z|🍗
+Buffalo chicken pizza|z|🍗
+White pizza|z|🍕
+Mushroom pizza|z|🍄
+Bacon pizza|z|🍕
+Pepperoni and mushroom pizza|z|🍄
+Pepperoni and sausage pizza|z|🌭
+Chicago deep-dish pizza|z|🍕
+Detroit-style pizza|z|🍕
+New York-style pizza|z|🍕
+Thin crust pizza|z|🍕
+Stuffed crust pizza|z|🍕
+Sicilian pizza|z|🍕
+Grandma pizza|z|🍕
+Neapolitan pizza|z|🍕
+Pizza bagels|z|🍕
+Pizza rolls|z|🍕
+French bread pizza|z|🍕
+Personal pan pizza|z|🍕
+Taco pizza|z|🍕
+Mac and cheese pizza|z|🧀
+Chicken bacon ranch pizza|z|🍗
+Spinach and feta pizza|z|🍕
+Philly cheesesteak pizza|z|🧀
+Calzone|z|🍕
+Stromboli|z|🍕
+Pepperoni rolls|z|🍕
+Frozen pizza|z|🍕
+DiGiorno pizza|z|🍕
+Totino's Party Pizza|z|🍕
+Jalapeño popper pizza|z|🍕
+Olive pizza|z|🍕
+Anchovy pizza|z|🍕
+Pesto pizza|z|🍕
+Four cheese pizza|z|🧀
+Cheeseburger pizza|z|🍔
+Pickle pizza|z|🍕
+Pizza pocket|z|🍕
+Pepperoni pizza slice|z|🍕
+Square school pizza|z|🍕
+Flatbread pizza|z|🍕
+Hot honey pepperoni pizza|z|🍕
+Chicken Alfredo pizza|z|🍗
+Spaghetti and meatballs|n|🍝
+Spaghetti with meat sauce|n|🍝
+Spaghetti Bolognese|n|🍝
+Fettuccine Alfredo|n|🍝
+Chicken Alfredo|n|🍗
+Mac and cheese|n|🧀
+Baked mac and cheese|n|🧀
+Kraft Mac and Cheese|n|🧀
+Velveeta Shells and Cheese|n|🐚🧀
+Lobster mac and cheese|n|🦞🧀
+Lasagna|n|🍝
+Vegetable lasagna|n|🍝
+Ravioli|n|🍝
+Cheese ravioli|n|🧀
+Toasted ravioli|n|🍞
+Tortellini|n|🍝
+Baked ziti|n|🍝
+Penne alla vodka|n|🍝
+Penne arrabbiata|n|🍝
+Carbonara|n|🍝
+Cacio e pepe|n|🍝
+Aglio e olio|n|🍝
+Pesto pasta|n|🍝
+Linguine with clams|n|🍝
+Shrimp scampi|n|🍤
+Lobster ravioli|n|🦞
+Gnocchi|n|🍝
+Manicotti|n|🍝
+Stuffed shells|n|🍝
+Chicken tetrazzini|n|🍗
+Chef Boyardee ravioli|n|🍝
+SpaghettiOs|n|🍝
+Cajun pasta|n|🍝
+Pasta primavera|n|🍝
+Orzo|n|🍝
+Rigatoni|n|🍝
+Lemon garlic pasta|n|🧄
+Garlic butter noodles|n|🍜
+Buttered noodles|n|🍜
+American goulash|n|🍝
+Hamburger Helper|n|🍔
+Tuna noodle casserole|n|🍜
+Chili mac|n|🌶️
+Chicken carbonara|n|🍗
+Spinach ravioli|n|🍝
+Pasta bake|n|🍝
+Cheesy chicken pasta|n|🍗
+Sausage rigatoni|n|🌭
+Mostaccioli|n|🍝
+Chicken pesto pasta|n|🍗
+Shrimp linguine|n|🍤
+Beef ravioli|n|🥩
+Chicken noodle soup|u|🍗
+Tomato soup|u|🍅
+Broccoli cheddar soup|u|🥦
+Corn chowder|u|🍲
+Potato soup|u|🥔
+Loaded baked potato soup|u|🥔
+French onion soup|u|🧅
+Minestrone|u|🍲
+Chicken tortilla soup|u|🍗
+Split pea soup|u|🍲
+Lentil soup|u|🍲
+Black bean soup|u|🍲
+Beef stew|u|🍲
+Chili|u|🌶️
+White chicken chili|u|🍗
+Vegetable soup|u|🍲
+Beef barley soup|u|🍲
+Cream of mushroom soup|u|🍄
+Butternut squash soup|u|🍲
+Italian wedding soup|u|🍲
+Zuppa Toscana|u|🍲
+Pasta e fagioli|u|🍝
+Chicken and dumplings|u|🥟
+Chicken and rice soup|u|🍗
+Matzo ball soup|u|🍲
+Lobster bisque|u|🦞
+Egg drop soup|u|🍲
+Wonton soup|u|🥟
+Hot and sour soup|u|🍲
+Miso soup|u|🍲
+Pho|u|🍜
+Tom yum|u|🍲
+Tom kha gai|u|🍲
+Menudo|u|🍲
+Pozole|u|🍲
+Caldo de res|u|🍲
+Albóndigas soup|u|🍲
+Sopa de fideo|u|🍲
+Borscht|u|🍲
+Gazpacho|u|🍲
+Chicken gnocchi soup|u|🍗
+Bean and bacon soup|u|🥓
+Cabbage soup|u|🍲
+Taco soup|u|🌮
+Manhattan clam chowder|u|🍲
+Bouillabaisse|u|🍲
+Mulligatawny|u|🍲
+Avgolemono|u|🍲
+Chili con carne|u|🌶️
+Cincinnati chili|u|🌶️
+Seafood chowder|u|🍲
+Tomato basil soup|u|🍅
+Chicken stew|u|🍗
+Irish stew|u|🍲
+Brunswick stew|u|🍲
+Chicken pozole|u|🍗
+Chicken Caesar salad|l|🍗
+Garden salad|l|🥗
+Cobb salad|l|🥗
+Chef salad|l|🥗
+Greek salad|l|🥗
+Wedge salad|l|🥗
+Caprese salad|l|🥗
+Taco salad|l|🥗
+Spinach salad|l|🥗
+Kale salad|l|🥗
+Macaroni salad|l|🥗
+Pasta salad|l|🥗
+Chicken salad|l|🍗
+Tuna salad|l|🥗
+Egg salad|l|🥗
+Waldorf salad|l|🥗
+Ambrosia salad|l|🥗
+Watergate salad|l|🥗
+Cucumber salad|l|🥗
+Three-bean salad|l|🥗
+Broccoli salad|l|🥦
+Asian chicken salad|l|🍗
+Buffalo chicken salad|l|🍗
+Southwest salad|l|🥗
+Strawberry spinach salad|l|🍓
+Quinoa salad|l|🥗
+Niçoise salad|l|🥗
+House salad with ranch|l|🥗
+Seven-layer salad|l|🥗
+Panzanella|l|🥗
+Seaweed salad|l|🥗
+Kani salad|l|🥗
+Grilled chicken salad|l|🍗
+Steak salad|l|🥗
+Chopped salad|l|🥗
+Jell-O salad|l|🥗
+Pea salad|l|🥗
+Corn salad|l|🥗
+Antipasto salad|l|🥗
+Shrimp salad|l|🍤
+Crab salad|l|🥗
+Fried chicken salad|l|🍗
+Italian salad|l|🥗
+BBQ chicken salad|l|🍗
+Apple pecan salad|l|🥗
+Fried chicken|m|🍗
+Grilled chicken|m|🍗
+Roast chicken|m|🍗
+Rotisserie chicken|m|🍗
+Chicken nuggets|m|🍗
+Chicken wings|m|🍗
+Buffalo wings|m|🍗
+BBQ wings|m|🍗
+Lemon pepper wings|m|🍗
+Honey garlic wings|m|🧄
+Garlic parmesan wings|m|🧄
+Teriyaki wings|m|🍗
+Mango habanero wings|m|🍗
+Hot honey wings|m|🍗
+Boneless wings|m|🍗
+Chicken drumsticks|m|🍗
+Chicken thighs|m|🍗
+Chicken pot pie|m|🥧
+Chicken fried steak|m|🍗
+Chicken casserole|m|🍗
+King Ranch chicken|m|🍗
+Chicken cordon bleu|m|🍗
+Chicken Kiev|m|🍗
+Chicken Marsala|m|🍗
+Chicken piccata|m|🍗
+Nashville hot chicken|m|🔥🍗
+BBQ chicken|m|🍗
+Chicken kabobs|m|🍗
+Stuffed chicken breast|m|🍗
+Popcorn chicken|m|🍗
+Steak|m|🥩
+Ribeye steak|m|🥩
+New York strip steak|m|🥩
+Filet mignon|m|🍽️
+T-bone steak|m|🥩
+Sirloin steak|m|🥩
+Porterhouse steak|m|🥩
+Flank steak|m|🥩
+Skirt steak|m|🥩
+Tri-tip|m|🍽️
+Prime rib|m|🍽️
+Roast beef|m|🥩
+Pot roast|m|🍽️
+Meatloaf|m|🍽️
+Salisbury steak|m|🥩
+Beef stroganoff|m|🥩
+Beef Wellington|m|🥩
+Brisket|m|🥩
+Smoked brisket|m|🥩
+Burnt ends|m|🍽️
+Short ribs|m|🍖
+Beef ribs|m|🥩
+Meatballs|m|🍝
+Swedish meatballs|m|🍝
+Shepherd's pie|m|🥧
+Corned beef and cabbage|m|🥩
+Beef kabobs|m|🍢
+Pork chops|m|🍖
+Fried pork chops|m|🍖
+Pulled pork|m|🍖
+Baby back ribs|m|🍖
+Spare ribs|m|🍖
+St. Louis ribs|m|🍖
+Pork tenderloin|m|🍖
+Pork roast|m|🍖
+Ham|m|🍖
+Honey baked ham|m|🍖
+Pork belly|m|🍖
+Kielbasa|m|🌭
+Pigs in a blanket|m|🌭
+Lamb chops|m|🍖
+Rack of lamb|m|🍖
+Leg of lamb|m|🍖
+Roast turkey|m|🦃
+Thanksgiving turkey|m|🦃
+Deep-fried turkey|m|🦃
+Turkey and gravy|m|🦃
+Smoked turkey leg|m|🦃
+Turkey meatballs|m|🍝
+Roast duck|m|🦆
+Venison|m|🍽️
+Tater tot casserole|m|🍽️
+Frito pie|m|🥧
+Walking tacos|m|🌮
+Stuffed cabbage|m|🍽️
+Jambalaya|m|🍽️
+Red beans and rice|m|🍚
+Dirty rice|m|🍚
+Boudin|m|🌭
+Country ham|m|🍖
+TV dinner|m|🍽️
+Fried chicken livers|m|🍗
+Chicken gizzards|m|🍗
+Oxtails|m|🍽️
+Smothered chicken|m|🍗
+Smothered pork chops|m|🍖
+Hamburger steak|m|🍔
+Thanksgiving dinner plate|m|🦃
+Sunday roast|m|🍽️
+BBQ platter|m|🍖
+Chicken and rice|m|🍗
+Chicken strips|m|🍗
+Steak tips|m|🥩
+Pork carnitas plate|m|🍖
+Grilled sausage|m|🌭
+Chicken fajita plate|m|🍗
+Beef tenderloin|m|🥩
+Chicken pot roast|m|🍗
+Baked chicken|m|🍗
+Lemon herb chicken|m|🍗
+Honey mustard chicken|m|🍗
+Bacon-wrapped chicken|m|🍗
+Chicken skewers|m|🍗
+Chili cheese dog|m|🌭
+Corned beef|m|🥩
+Cajun chicken|m|🍗
+Chicken and broccoli casserole|m|🥦
+Hot wings|m|🍗
+Ranch chicken|m|🍗
+Crispy chicken thighs|m|🍗
+Glazed pork chops|m|🍖
+Barbecue ribs|m|🍖
+Sausage biscuits|m|🌭
+Fried shrimp|q|🍤
+Shrimp cocktail|q|🍤
+Coconut shrimp|q|🥥
+Popcorn shrimp|q|🍿
+Grilled shrimp|q|🍤
+Garlic butter shrimp|q|🍤
+Shrimp and grits|q|🍤
+Bang bang shrimp|q|🍤
+Cajun shrimp|q|🍤
+Salmon|q|🐟
+Grilled salmon|q|🐟
+Baked salmon|q|🐟
+Smoked salmon|q|🐟
+Salmon patties|q|🐟
+Teriyaki salmon|q|🐟
+Seared ahi tuna|q|🐟
+Tuna steak|q|🐟
+Cod|q|🐟
+Tilapia|q|🐟
+Catfish|q|🐟
+Fried catfish|q|🐟
+Blackened catfish|q|🐟
+Halibut|q|🐟
+Mahi-mahi|q|🐟
+Swordfish|q|🐟
+Trout|q|🐟
+Sea bass|q|🐟
+Red snapper|q|🐟
+Flounder|q|🐟
+Haddock|q|🐟
+Fish sticks|q|🐟
+Lobster|q|🦞
+Lobster tail|q|🦞
+Crab legs|q|🦀
+Snow crab legs|q|🦀
+King crab legs|q|🦀
+Crab cakes|q|🦀
+Soft-shell crab|q|🦀
+Dungeness crab|q|🦀
+Crawfish|q|🐟
+Crawfish boil|q|🐟
+Crawfish étouffée|q|🐟
+Seafood boil|q|🐟
+Low country boil|q|🐟
+Steamed clams|q|🦪
+Fried clams|q|🐟
+Oysters|q|🦪
+Raw oysters|q|🦪
+Fried oysters|q|🦪
+Oysters Rockefeller|q|🦪
+Mussels|q|🐟
+Scallops|q|🐟
+Seared scallops|q|🐟
+Bacon-wrapped scallops|q|🥓
+Fried calamari|q|🦑
+Grilled octopus|q|🐙
+Ceviche|q|🐟
+Cioppino|q|🐟
+Sardines|q|🐟
+Anchovies|q|🐟
+Caviar|q|🐟
+Fish tacos|q|🌮
+Blackened salmon|q|🐟
+Shrimp skewers|q|🍤
+Lemon pepper fish|q|🐟
+Beer-battered fish|q|🐟
+Crab Rangoon dip|q|🥟
+Shrimp boil|q|🍤
+Fried fish|q|🐟
+Lobster Thermidor|q|🦞
+Shrimp fried rice|q|🍤🍚
+Garlic shrimp pasta|q|🍤
+Seafood platter|q|🦞
+Shrimp alfredo pasta|q|🍤
+Orange chicken|a|🍗
+General Tso's chicken|a|🍗
+Sesame chicken|a|🍗
+Kung Pao chicken|a|🍗
+Sweet and sour chicken|a|🍗
+Sweet and sour pork|a|🍖
+Honey walnut shrimp|a|🍤
+Beijing beef|a|🥩
+Broccoli beef|a|🥦
+Mongolian beef|a|🥩
+Pepper steak|a|🥩
+Mushroom chicken|a|🍄
+Cashew chicken|a|🍗
+Lemon chicken|a|🍗
+String bean chicken|a|🍗
+Teriyaki chicken|a|🍗
+Chow mein|a|🍜
+Fried rice|a|🍚
+Chicken fried rice|a|🍚
+Pork fried rice|a|🍚
+Egg fried rice|a|🍚
+Egg rolls|a|🥟
+Spring rolls|a|🥟
+Potstickers|a|🥟
+Dumplings|a|🥟
+Soup dumplings|a|🥟
+Wontons|a|🥟
+Fried wontons|a|🥟
+Egg foo young|a|🥚
+Mapo tofu|a|🧈
+Dan dan noodles|a|🍜
+Peking duck|a|🦆
+Char siu pork|a|🍖
+Steamed buns|a|🥟
+Pork buns|a|🍖
+Dim sum|a|🥢
+Shumai|a|🥢
+Har gow|a|🥢
+Congee|a|🥢
+Hot pot|a|🥢
+Chop suey|a|🥢
+Moo shu pork|a|🍖
+Scallion pancakes|a|🥞
+Salt and pepper shrimp|a|🍤
+Chinese spare ribs|a|🍖
+Tempura|a|🥢
+Shrimp tempura|a|🍤
+Vegetable tempura|a|🥢
+Chicken katsu|a|🍗
+Tonkatsu|a|🍗
+Katsu curry|a|🍛
+Japanese curry|a|🍛
+Ramen|a|🍜
+Tonkotsu ramen|a|🍜
+Shoyu ramen|a|🍜
+Miso ramen|a|🍜
+Spicy ramen|a|🍜
+Instant ramen|a|🍜
+Maruchan ramen|a|🍜
+Cup Noodles|a|🍜
+Top Ramen|a|🍜
+Buldak ramen|a|🔥🍜
+Udon|a|🍜
+Tempura udon|a|🍜
+Soba|a|🍜
+Yakisoba|a|🍜
+Gyoza|a|🥟
+Takoyaki|a|🐙
+Okonomiyaki|a|🥢
+Onigiri|a|🍙
+Teriyaki bowl|a|🥣
+Hibachi steak|a|🥩
+Hibachi chicken|a|🍗
+Hibachi fried rice|a|🍚
+Karaage|a|🥢
+Yakitori|a|🍢
+Gyudon|a|🍜
+Oyakodon|a|🥢
+Bento box|a|🍱
+Korean BBQ|a|🥢
+Bulgogi|a|🥢
+Galbi|a|🥢
+Bibimbap|a|🥢
+Kimchi|a|🥢
+Kimchi fried rice|a|🍚
+Korean fried chicken|a|🍗
+Tteokbokki|a|🥢
+Japchae|a|🥢
+Kimbap|a|🥢
+Korean corn dog|a|🌭
+Budae jjigae|a|🥢
+Kimchi stew|a|🍲
+Samgyeopsal|a|🥢
+Pad Thai|a|🥢
+Pad see ew|a|🥢
+Drunken noodles|a|🍜
+Green curry|a|🍛
+Red curry|a|🍛
+Yellow curry|a|🍛
+Panang curry|a|🍛
+Massaman curry|a|🍛
+Thai basil chicken|a|🍗
+Mango sticky rice|a|🥭
+Chicken satay|a|🍗
+Larb|a|🥢
+Pineapple fried rice|a|🍍🍚
+Banh mi|a|🥖
+Fresh spring rolls|a|🥟
+Bun bo Hue|a|🥢
+Vermicelli bowl|a|🥣
+Butter chicken|a|🍗
+Chicken tikka masala|a|🍗
+Tandoori chicken|a|🍗
+Chicken curry|a|🍗
+Chana masala|a|🍛
+Palak paneer|a|🥢
+Paneer tikka|a|🥢
+Biryani|a|🥢
+Samosas|a|🥢
+Pakoras|a|🥢
+Dal|a|🥢
+Aloo gobi|a|🥢
+Vindaloo|a|🥢
+Chicken korma|a|🍗
+Gulab jamun|a|🥢
+Chicken adobo|a|🍗
+Pancit|a|🥢
+Lumpia|a|🥢
+Sinigang|a|🥢
+Lechon|a|🥢
+Sisig|a|🥢
+Halo-halo|a|🥢
+Kare-kare|a|🥢
+Spam musubi|a|🍙
+Loco moco|a|🥢
+Kalua pork|a|🍖
+Tofu|a|🧈
+Fried tofu|a|🧈
+Nasi goreng|a|🥢
+Laksa|a|🥢
+Singapore noodles|a|🍜
+Hainanese chicken rice|a|🍗
+Beef pho|a|🥩
+Chicken lo mein|a|🍗
+Shrimp lo mein|a|🍤
+Beef and broccoli|a|🥦
+Teriyaki beef|a|🥩
+Chicken teriyaki bowl|a|🍗
+Szechuan chicken|a|🍗
+Hunan beef|a|🥩
+Garlic noodles|a|🍜
+Sesame noodles|a|🍜
+Chicken ramen|a|🍗
+Beef ramen|a|🍜
+Korean spicy noodles|a|🍜
+Bao buns|a|🥢
+Fried dumplings|a|🥟
+Chicken chow mein|a|🍗
+Ube ice cream|a|🍠🍨
+Matcha ice cream|a|🍵🍨
+Taiyaki|a|🐟
+Dorayaki|a|🥢
+Bingsu|a|🍧
+Kulfi|a|🥢
+Pocky|a|🥢🍫
+Hello Panda|a|🐼
+Yan Yan|a|🥢
+Hi-Chew|a|🍬
+Mochi|a|🥢
+Teriyaki salmon bowl|a|🐟
+Poke bowl|a|🥣
+Sashimi|a|🍣
+Salmon nigiri|a|🐟
+Tuna nigiri|a|🍣
+Unagi|a|🥢
+Sushi|a|🍣
+Spicy tuna roll|a|🍣
+Shrimp tempura roll|a|🍣
+Dragon roll|a|🍣
+Rainbow roll|a|🍣
+Philadelphia roll|a|🍣
+Spider roll|a|🍣
+Caterpillar roll|a|🍣
+Volcano roll|a|🍣
+Crunchy roll|a|🍣
+Spicy salmon roll|a|🍣
+Cucumber roll|a|🍣
+Avocado roll|a|🍣
+Salmon avocado roll|a|🍣
+Yellowtail roll|a|🍣
+Eel roll|a|🍣
+Tuna roll|a|🍣
+Las Vegas roll|a|🍣
+Boston roll|a|🍣
+Alaska roll|a|🍣
+Tacos|x|🌮
+Beef tacos|x|🌮
+Chicken tacos|x|🍗
+Carne asada tacos|x|🌮
+Al pastor tacos|x|🌮
+Carnitas tacos|x|🌮
+Barbacoa tacos|x|🌮
+Shrimp tacos|x|🍤
+Street tacos|x|🌮
+Hard shell tacos|x|🌮
+Quesabirria|x|🌮
+Burrito|x|🌯
+Bean and cheese burrito|x|🌯
+Chicken burrito|x|🌯
+Carne asada burrito|x|🌯
+California burrito|x|🌯
+Chimichanga|x|🌯
+Burrito bowl|x|🌯
+Enchiladas|x|🌯
+Chicken enchiladas|x|🌯
+Cheese enchiladas|x|🌯
+Enchiladas verdes|x|🌯
+Quesadilla|x|🧀
+Chicken quesadilla|x|🧀
+Cheese quesadilla|x|🧀
+Nachos|x|🧀
+Loaded nachos|x|🧀
+Fajitas|x|🌮
+Chicken fajitas|x|🍗
+Steak fajitas|x|🥩
+Tamales|x|🫔
+Chile relleno|x|🌶️
+Tostadas|x|🌮
+Taquitos|x|🌮
+Flautas|x|🌮
+Gorditas|x|🌮
+Sopes|x|🌮
+Huaraches|x|🌮
+Tortas|x|🥪
+Elote|x|🌽
+Esquites|x|🌽
+Chicken mole|x|🍗
+Chilaquiles|x|🌮
+Huevos rancheros|x|🍳
+Migas|x|🌮
+Carne asada|x|🥩
+Carnitas|x|🌮
+Barbacoa|x|🌮
+Mexican rice|x|🍚
+Refried beans|x|🫘
+Charro beans|x|🫘
+Guacamole|x|🥑
+Chips and salsa|x|🌮
+Queso dip|x|🧀
+Pico de gallo|x|🍅
+Tex-Mex combo plate|x|🌮
+Conchas|x|🌮
+Pan dulce|x|🌮
+Empanadas|x|🌮
+Arepas|x|🌮
+Pupusas|x|🌮
+Ropa vieja|x|🌮
+Picadillo|x|🌮
+Arroz con pollo|x|🌮
+Rice and beans|x|🍚
+Fried plantains|x|🍌
+Tostones|x|🍌
+Maduros|x|🍌
+Mofongo|x|🌮
+Pernil|x|🌮
+Lomo saltado|x|🌮
+Chimichurri steak|x|🥩
+Feijoada|x|🌮
+Pão de queijo|x|🧀
+Coxinha|x|🌮
+Seven-layer dip|x|🥣
+Alfajores|x|🌮
+Arroz con leche|x|🌮
+Buñuelos|x|🌮
+Paletas|x|🌮
+Mangonada|x|🥭
+Fish tacos Baja-style|x|🌮
+Steak burrito|x|🌯
+Breakfast quesadilla|x|🧀
+Mexican street corn|x|🌽
+Tlayudas|x|🌮
+Bean burrito|x|🌯
+Chorizo and eggs|x|🥚
+Carne guisada|x|🌮
+Fideo|x|🌮
+Chicken tinga tacos|x|🍗
+Shrimp quesadilla|x|🧀
+Birria ramen|x|🍜
+Chicken cacciatore|g|🍗
+Osso buco|g|🌍
+Risotto|g|🌍
+Mushroom risotto|g|🍄
+Arancini|g|🌍
+Bruschetta|g|🌍
+Eggplant parmesan|g|🍆
+Polenta|g|🌍
+Veal parmesan|g|🌍
+Prosciutto and melon|g|🍈
+Coq au vin|g|🌍
+Beef bourguignon|g|🥩
+Ratatouille|g|🌍
+Escargot|g|🌍
+Soufflé|g|🌍
+Cassoulet|g|🌍
+Steak frites|g|🥩
+Duck confit|g|🦆
+Bangers and mash|g|🌍
+Toad in the hole|g|🌍
+Full English breakfast|g|🌍
+Beans on toast|g|🍞
+Scotch egg|g|🥚
+Sausage roll|g|🌭
+Cornish pasty|g|🥟
+Haggis|g|🌍
+Bubble and squeak|g|🌍
+Schnitzel|g|🌍
+Sauerbraten|g|🌍
+Spaetzle|g|🌍
+German potato salad|g|🥔
+Currywurst|g|🍛
+Pierogi|g|🥟
+Goulash|g|🌍
+Chicken paprikash|g|🍗
+Cabbage rolls|g|🥬
+Blini|g|🌍
+Gyro|g|🥙
+Souvlaki|g|🌍
+Moussaka|g|🌍
+Spanakopita|g|🌍
+Dolmas|g|🌍
+Falafel|g|🧆
+Hummus|g|🌍
+Baba ganoush|g|🌍
+Tabbouleh|g|🌍
+Fattoush|g|🌍
+Shawarma|g|🥙
+Chicken shawarma|g|🥙
+Shish kebab|g|🍢
+Kofta|g|🌍
+Doner kebab|g|🍢
+Tzatziki|g|🌍
+Shakshuka|g|🍳
+Kibbeh|g|🌍
+Halal chicken over rice|g|🍗
+Paella|g|🌍
+Patatas bravas|g|🌍
+Gambas al ajillo|g|🌍
+Spanish tortilla|g|🌍
+Croquetas|g|🌍
+Jollof rice|g|🍚
+Doro wat with injera|g|🌍
+Bobotie|g|🌍
+Bunny chow|g|🌍
+Suya|g|🌍
+Fufu|g|🌍
+Egusi soup|g|🍲
+Peri-peri chicken|g|🍗
+Jerk chicken|g|🍗
+Curry goat|g|🍛
+Jamaican beef patty|g|🥩
+Rice and peas|g|🍚
+Ackee and saltfish|g|🐟
+Doubles|g|🌍
+Tourtière|g|🌍
+Meat pie|g|🥧
+Vegemite toast|g|🍞
+Lahmacun|g|🌍
+Pide|g|🌍
+Pelmeni|g|🌍
+Cheese fondue|g|🫕
+Pastel de nata|g|🌍
+Pavlova|g|🌍
+Lamingtons|g|🌍
+Nanaimo bars|g|🌍
+Butter tarts|g|🌍
+Tim Tams|g|🌍
+Fish pie|g|🐟
+Chicken tikka wrap|g|🍗
+Greek chicken bowl|g|🍗
+Mediterranean bowl|g|🥣
+Falafel wrap|g|🧆
+Lamb gyro|g|🍖
+Kebab plate|g|🍢
+French fries|h|🍟
+Curly fries|h|🍟
+Waffle fries|h|🧇
+Steak fries|h|🍟
+Shoestring fries|h|🍟
+Sweet potato fries|h|🍠
+Seasoned fries|h|🍟
+Cajun fries|h|🍟
+Chili cheese fries|h|🧀
+Cheese fries|h|🧀
+Garlic fries|h|🧄
+Truffle fries|h|🍟
+Loaded fries|h|🍟
+Animal Style fries|h|🍟
+Tater tots|h|🍟
+Onion rings|h|🧅
+Mozzarella sticks|h|🧀
+Jalapeño poppers|h|🌶️
+Fried pickles|h|🥒
+Hush puppies|h|🍘
+Mashed potatoes|h|🥔
+Mashed potatoes and gravy|h|🥔
+Loaded baked potato|h|🥔
+Twice-baked potatoes|h|🥔
+Scalloped potatoes|h|🥔
+Au gratin potatoes|h|🥔
+Potato wedges|h|🥔
+Roasted potatoes|h|🥔
+Potato salad|h|🥔
+Coleslaw|h|🥬
+Baked beans|h|🫘
+Green bean casserole|h|🫘
+Sweet potato casserole|h|🍠
+Candied yams|h|🍠
+Stuffing|h|🍟
+Cranberry sauce|h|🍟
+Rice pilaf|h|🍚
+White rice|h|🍚
+Brown rice|h|🍚
+Yellow rice|h|🍚
+Cilantro lime rice|h|🍚
+Garlic mashed potatoes|h|🥔
+Deviled eggs|h|🥚
+Spinach artichoke dip|h|🥣
+Buffalo chicken dip|h|🍗
+French onion dip|h|🧅
+Bean dip|h|🫘
+Charcuterie board|h|🧀
+Veggie tray|h|🥕
+Side salad|h|🥗
+Potato skins|h|🥔
+Fried mushrooms|h|🍄
+Fried zucchini|h|🍟
+Cheese curds|h|🧀
+Fried cheese curds|h|🧀
+Stuffed mushrooms|h|🍄
+Hash brown casserole|h|🍟
+Funeral potatoes|h|🥔
+Corn casserole|h|🌽
+Olives|h|🫒
+Cottage cheese|h|🥛
+Bloomin' onion|h|🧅
+Mac and cheese bites|h|🧀
+Loaded tots|h|🍟
+Garlic parmesan fries|h|🧄
+Potato pancakes|h|🥞
+Corn fritters|h|🌽
+Elote dip|h|🥣
+Cheesy potatoes|h|🥔
+Fried rice balls|h|🍚
+Gravy fries|h|🍟
+Cheddar cheese|j|🧀
+Sharp cheddar|j|🧀
+Mozzarella|j|🧀
+Fresh mozzarella|j|🧀
+Swiss cheese|j|🧀
+Provolone|j|🧀
+American cheese|j|🧀
+Pepper jack|j|🧀
+Monterey Jack|j|🧀
+Colby Jack|j|🧀
+Parmesan|j|🧀
+Gouda|j|🧀
+Smoked gouda|j|🧀
+Brie|j|🧀
+Camembert|j|🧀
+Feta|j|🧀
+Goat cheese|j|🧀
+Blue cheese|j|🧀
+Gorgonzola|j|🧀
+Havarti|j|🧀
+Muenster|j|🧀
+Gruyère|j|🧀
+Manchego|j|🧀
+Ricotta|j|🧀
+Cream cheese|j|🧀
+String cheese|j|🧀
+Babybel|j|🧀
+Velveeta|j|🧀
+Queso fresco|j|🧀
+Cotija|j|🧀
+Halloumi|j|🧀
+Burrata|j|🧀
+Paneer|j|🧀
+Pimento cheese|j|🧀
+Mascarpone|j|🧀
+Asiago|j|🧀
+Romano|j|🧀
+Fontina|j|🧀
+Laughing Cow|j|🧀
+Kraft Singles|j|🧀
+Cheez Whiz|j|🧀
+Fried halloumi|j|🧀
+Baked brie|j|🧀
+Grilled cheese bites|j|🧀
+Cheese platter|j|🧀
+Microwave popcorn|s|🍿
+Cheddar popcorn|s|🍿
+SkinnyPop|s|🍿
+Smartfood White Cheddar Popcorn|s|🍿
+Goldfish crackers|s|🐟
+Cheez-Its|s|🧀
+Cheez-It White Cheddar|s|🧀
+Ritz crackers|s|🍿
+Ritz Bits|s|🍿
+Triscuits|s|🍿
+Wheat Thins|s|🍿
+Saltines|s|🍿
+Club crackers|s|🍿
+Graham crackers|s|🍪
+Teddy Grahams|s|🧸
+Animal crackers|s|🦁
+Gardetto's|s|🍿
+Chex Mix|s|🍿
+Bugles|s|🍿
+Combos|s|🍿
+Rold Gold pretzels|s|🥨
+Snyder's pretzel pieces|s|🥨
+Pretzel rods|s|🥨
+Peanut butter pretzels|s|🥨
+Yogurt-covered pretzels|s|🥨
+Chocolate-covered pretzels|s|🥨🍫
+Trail mix|s|🥜
+Peanuts|s|🥜
+Honey roasted peanuts|s|🥜
+Cashews|s|🥜
+Almonds|s|🥜
+Pistachios|s|🥜
+Sunflower seeds|s|🌻
+Pumpkin seeds|s|🎃
+Mixed nuts|s|🥜
+Macadamia nuts|s|🥜
+Pecans|s|🥜
+Walnuts|s|🥜
+Beef jerky|s|🥩
+Slim Jim|s|🥩
+Lunchables|s|🧀
+Hot Pockets|s|🍿
+Bagel Bites|s|🥯
+Totino's Pizza Rolls|s|🍕
+Uncrustables|s|🥪
+Granola bar|s|🍿
+Nature Valley bar|s|🍿
+Chewy granola bar|s|🍿
+Nutri-Grain bar|s|🥜
+Clif Bar|s|🍿
+Protein bar|s|🍿
+Rice cakes|s|🍰
+Fruit snacks|s|🍿
+Welch's fruit snacks|s|🍇
+Gushers|s|🍿
+Fruit by the Foot|s|🍿
+Fruit Roll-Ups|s|🍞
+Pudding cup|s|🍮
+Ants on a log|s|🐜
+Cheese and crackers|s|🧀
+Seaweed snacks|s|🍿
+Rice crackers|s|🍚
+Pork rinds|s|🍖
+Chicharrones|s|🍿
+Chamoy pickle|s|🥒
+Cracker Jack|s|🍿
+Corn Nuts|s|🌽
+Veggie Straws|s|🥕
+Pirate's Booty|s|🍿
+Go-Gurt|s|🥛
+Nutella & Go|s|🥜
+Dunkaroos|s|🍿
+Handi-Snacks|s|🍿
+Ritz peanut butter crackers|s|🥜
+Ding Dongs|s|🍿
+Ho Hos|s|🍿
+Twinkies|s|🍿
+Hostess CupCakes|s|🧁
+Fudge Rounds|s|🍫
+Nutty Buddy|s|🥜
+Star Crunch|s|🍿
+Snack cakes|s|🍰
+Cheese puffs|s|🧀
+Pickle chips|s|🥒
+Beef sticks|s|🥩
+Dried seaweed|s|🍿
+Wasabi peas|s|🫛
+Popcorn chicken bites|s|🍗
+Mini muffins|s|🧁
+Peanut butter crackers|s|🥜
+Honey Maid graham crackers|s|🍪
+Frosted animal cookies|s|🦁
+Doritos Cool Ranch|c|🔺
+Doritos Spicy Sweet Chili|c|🔺
+Doritos Flamin' Hot|c|🔺🔥
+Doritos Spicy Nacho|c|🔺
+Cheetos Puffs|c|🧀
+Flamin' Hot Limón Cheetos|c|🔥🍋
+Lay's Sour Cream and Onion|c|🧅
+Lay's Salt and Vinegar|c|🥔
+Lay's Dill Pickle|c|🥒
+Lay's Kettle Cooked|c|🥔
+Lay's Flamin' Hot|c|🔥
+Lay's Limón|c|🍋
+Lay's Cheddar and Sour Cream|c|🥔
+Lay's Wavy|c|🥔
+Ruffles All Dressed|c|🥔
+Ruffles Flamin' Hot|c|🔥
+Pringles BBQ|c|🥫
+Pringles Cheddar Cheese|c|🥫
+Pringles Pizza|c|🥫
+Pringles Salt and Vinegar|c|🥫
+Pringles Jalapeño|c|🥫
+Kettle Brand Sea Salt|c|🥔
+Kettle Brand Jalapeño|c|🥔
+Cape Cod chips|c|🐟
+Zapp's Voodoo|c|🥔
+Sun Chips Garden Salsa|c|☀️
+Sun Chips Original|c|☀️
+Tostitos Scoops|c|🔺
+Tostitos Hint of Lime|c|🔺
+Takis Blue Heat|c|🔵
+Takis Intense Nacho|c|🌀
+Hot Fries|c|🔥
+Fritos Chili Cheese|c|🌽
+Fritos Scoops|c|🌽
+Funyuns Flamin' Hot|c|🧅
+Popchips|c|🥔
+Terra chips|c|🥔
+Plantain chips|c|🍌
+Tortilla chips|c|🔺
+Pita chips|c|🥔
+Bagel chips|c|🥯
+Stacy's pita chips|c|🥔
+Miss Vickie's Sea Salt and Vinegar|c|🥔
+Pretzel crisps|c|🥨
+Utz Crab Chips|c|🦀
+Lay's Honey Barbecue|c|🥔
+Lay's Chile Limón|c|🍋
+Ruffles Cheddar|c|🥔
+Doritos Dinamita|c|🔺
+Chester's Fries|c|🍟
+Munchies snack mix|c|🥔
+Baked Lay's|c|🥔
+Sweet potato chips|c|🍠
+Kettle Brand Salt and Pepper|c|🥔
+Herr's Ketchup chips|c|🍅
+Lay's Ketchup chips|c|🍅
+Old Bay chips|c|🥔
+Reese's Pieces|y|🥜
+Peanut M&M's|y|🥜
+Peanut Butter M&M's|y|🥜
+Crunch bar|y|🍫
+100 Grand|y|🍫
+PayDay|y|🥜
+Baby Ruth|y|🍫
+Mounds|y|🥥
+Heath bar|y|🍫
+Whoppers|y|🍬
+Milk Duds|y|🍬
+Junior Mints|y|🌿
+Raisinets|y|🍬
+Goobers|y|🥜
+Rolos|y|🍫
+York Peppermint Pattie|y|🌿
+Andes mints|y|🌿
+Mike and Ike|y|🍬
+Hot Tamales|y|🔥
+Dots|y|🍬
+Good & Plenty|y|🍬
+Sour Punch Straws|y|🍬
+Sour Patch Watermelon|y|🍉
+Trolli Sour Brite Crawlers|y|🪱
+Haribo Goldbears|y|🧸
+Fun Dip|y|🥣
+Pixy Stix|y|🍬
+SweeTarts|y|🍬
+Smarties|y|🍬
+Nerds Rope|y|🍬
+Blow Pops|y|🍭
+Tootsie Pops|y|🍭
+Dum Dums|y|🍭
+Jawbreakers|y|🍬
+Gobstoppers|y|🍬
+Lemonheads|y|🍋
+Atomic Fireballs|y|🔥
+Red Hots|y|🔥
+Candy corn|y|🌽
+Candy canes|y|🍬
+Werther's Original|y|🍬
+Caramels|y|🍬
+Hershey's Cookies 'n' Creme|y|🍪
+Mr. Goodbar|y|🥜
+Cadbury Creme Egg|y|🥚
+Cadbury Dairy Milk|y|🍫
+Lindt truffles|y|🍫
+Ghirardelli squares|y|🍫
+Dove chocolate|y|🍫
+Dark chocolate|y|🍫
+White chocolate|y|🤍
+Peanut brittle|y|🥜
+Saltwater taffy|y|🍬
+Rock candy|y|💎
+Black licorice|y|🍬
+Red Vines|y|🍬
+Sour Skittles|y|🌈
+Wild Berry Skittles|y|🌈
+Airheads Xtremes|y|🍬
+Bit-O-Honey|y|🍯
+Charleston Chew|y|🍬
+Necco Wafers|y|🍬
+Pop Rocks|y|💥
+Baby Bottle Pop|y|🍼
+Toxic Waste|y|☢️
+Kinder Bueno|y|🍫
+Kinder Joy|y|🥚
+Pulparindo|y|🍬
+Pelon Pelo Rico|y|🍬
+Vero Mango lollipop|y|🍭
+Duvalín|y|🍬
+Mazapán|y|🥜
+Gummy sharks|y|🦈
+Peach rings|y|🍑
+Sour gummy worms|y|🪱
+Jelly Belly|y|🫘
+Whatchamacallit|y|🍫
+Take 5|y|🍫
+Symphony bar|y|🍫
+Cow Tales|y|🍬
+Sugar Babies|y|🍬
+Sour Patch Kids Tropical|y|🍬
+Swedish Fish Tails|y|🐟
+Butterscotch candies|y|🍬
+Chocolate gold coins|y|🪙
+Milk chocolate truffles|y|🍫
+Gummy bears sour|y|🧸
+Watermelon Jolly Ranchers|y|🍉
+Twix Peanut Butter|y|🍫
+Snickers Peanut Butter|y|🍫
+Reese's Big Cup|y|🥜
+KitKat Chunky|y|🍫
+Hershey's Almond|y|🍫
+Chocolate-covered almonds|y|🍫
+Chocolate-covered cherries|y|🍒
+Turtles|y|🐢
+Candy buttons|y|🍬
+Wax bottles|y|🍬
+Sour Belts|y|🍬
+Starburst Minis|y|⭐
+Chewy SweeTarts|y|🍬
+Hubba Bubba|y|🍬
+Bubble Tape|y|🍬
+Big League Chew|y|🍬
+Juicy Fruit gum|y|🍬
+Bazooka gum|y|🍬
+Mochi donuts|d|🍩
+Cronut|d|🥐
+Donut holes|d|🍩
+Munchkins|d|🍩
+Apple fritter|d|🍎
+Bear claw|d|🥐
+Maple bar|d|🍩
+Old-fashioned donut|d|🍩
+Sprinkle donut|d|🍩
+Chocolate frosted donut|d|🍩
+Cruller|d|🍩
+Kolache|d|🍰
+Apple strudel|d|🍎
+Linzer cookies|d|🍪
+Rugelach|d|🍰
+Biscotti|d|🍪
+Madeleines|d|🍰
+Pizzelle|d|🍰
+Snowball cookies|d|🍪
+Thumbprint cookies|d|🍪
+Whoopie pies|d|🥧
+Devil's food cake|d|🎂
+Yellow cake with chocolate frosting|d|🎂
+Icebox cake|d|🍰
+Dirt cake|d|🪱
+Cookie cake|d|🍪
+Edible cookie dough|d|🍪
+Brownie sundae|d|🍨
+Pizookie|d|🍪
+Peach pie|d|🍑
+Strawberry rhubarb pie|d|🥧
+Mud pie|d|🥧
+Grasshopper pie|d|🥧
+Chess pie|d|🥧
+Pumpkin roll|d|🎃
+Yule log|d|🪵
+Fruitcake|d|🍰
+Gingerbread|d|🍪
+Sticky toffee pudding|d|🍮
+Bananas Foster|d|🍌
+Baked Alaska|d|🍰
+Profiteroles|d|🍰
+Napoleon pastry|d|🍰
+Petit fours|d|🍰
+Fruit tart|d|🍓
+Egg tarts|d|🥚
+Pistachio ice cream|d|🍨
+Coffee ice cream|d|🍨
+Moose Tracks ice cream|d|🍨
+Birthday cake ice cream|d|🍨
+Cotton candy ice cream|d|🍨
+Superman ice cream|d|🍨
+Orange sherbet|d|🍧
+Salted caramel ice cream|d|🍨
+Black raspberry ice cream|d|🍨
+Peanut butter cup ice cream|d|🍨
+French vanilla ice cream|d|🍨
+Soft serve|d|🍦
+Dipped cone|d|🍦
+Strawberry sundae|d|🍨
+Caramel sundae|d|🍨
+Chocolate cupcake|d|🧁
+Vanilla cupcake|d|🧁
+Lemon cupcake|d|🧁
+Cookies and cream cupcake|d|🧁
+Chocolate chip cookie bars|d|🍪
+Seven-layer bars|d|🍰
+Magic cookie bars|d|🍪
+Peanut butter blossoms|d|🍪
+No-bake cookies|d|🍪
+Monster cookies|d|🍪
+Molasses cookies|d|🍪
+Chocolate pudding|d|🍮
+Vanilla pudding|d|🍮
+Tapioca pudding|d|🍮
+Butterscotch pudding|d|🍮
+Cheesecake bites|d|🍰
+New York cheesecake|d|🍰
+Turtle cheesecake|d|🍰
+Chocolate cheesecake|d|🍰
+Pumpkin cheesecake|d|🍰
+Strawberry crepes|d|🥞
+Lemon sorbet|d|🍋
+Raspberry sorbet|d|🍰
+Chocolate eclair cake|d|🍫
+Boston cream pie|d|🥧
+Hummingbird cake|d|🎂
+Italian cream cake|d|🎂
+Hostess Sno Balls|d|🍰
+Oatmeal chocolate chip cookie|d|🍪
+Brown butter cookie|d|🍪
+Mint chocolate cookie|d|🍪
+S'mores bars|d|🍰
+Rocky road fudge|d|🍫
+Cookie dough bites|d|🍪
+Cinnamon sugar donuts|d|🍩
+Pumpkin spice donut|d|🍩
+Blueberry cake donut|d|🍩
+Red velvet donut|d|🍩
+Maple bacon donut|d|🍩🥓
+Dulce de leche ice cream|d|🍨
+Ube cake|d|🍠
+Mango float|d|🥭
+Leche flan|d|🍮
+Big Mac|m|🍔
+Quarter Pounder with Cheese|m|🧀
+McDouble|m|🍔
+McChicken|m|🍗
+Filet-O-Fish|m|🐟
+Chicken McNuggets|m|🍗
+Egg McMuffin|m|🍳
+Sausage McMuffin with Egg|m|🍳
+McDonald's hotcakes|m|🥞
+McDonald's hash brown|m|🥔
+McGriddles|m|🥞
+McDonald's apple pie|m|🥧
+Shamrock Shake|m|☘️🥤
+McRib|m|🍖
+Happy Meal|m|🙂
+Whopper|m|🍔
+Whopper Jr.|m|🍔
+Burger King Chicken Fries|m|🍗
+Burger King onion rings|m|🧅
+BK Original Chicken Sandwich|m|🥪
+Croissan'wich|m|🥐
+Dave's Single|m|🍔
+Baconator|m|🥓
+Wendy's Frosty|m|🥤
+Wendy's chili|m|🌶️
+Wendy's spicy nuggets|m|🍗
+Jr. Bacon Cheeseburger|m|🍔
+Chick-fil-A sandwich|m|🐔
+Chick-fil-A nuggets|m|🐔
+Chick-fil-A waffle fries|m|🧇🍟
+Chick-fil-A chicken biscuit|m|🐔
+Chick-fil-A cookies and cream milkshake|m|🥤
+Chick-n-Minis|m|🐔
+Doritos Locos Tacos|m|🌮
+Chalupa Supreme|m|🌮
+Quesarito|m|🌯
+Mexican Pizza|m|🍕
+Cheesy Bean and Rice Burrito|m|🌯
+Cinnamon Twists|m|🌀
+Nachos BellGrande|m|🧀
+Cinnabon Delights|m|🍩
+Taco Bell soft taco|m|🌮
+KFC Original Recipe chicken|m|🍗
+KFC Famous Bowl|m|🥣
+KFC popcorn chicken|m|🍗
+KFC mashed potatoes and gravy|m|🥔
+Popeyes chicken sandwich|m|🥪
+Popeyes spicy chicken|m|🍗
+Popeyes biscuits|m|🍔
+Popeyes Cajun fries|m|🍟
+Five Guys burger|m|🍔
+Five Guys Cajun fries|m|🍟
+In-N-Out Double-Double|m|🍔
+Whataburger|m|🍔
+Whataburger Honey Butter Chicken Biscuit|m|🍯
+Sonic Cherry Limeade|m|🍒🥤
+Arby's roast beef sandwich|m|🥪
+Arby's curly fries|m|🍟
+Arby's Beef 'n Cheddar|m|🥪
+Jack in the Box tacos|m|🌮
+Jumbo Jack|m|🍔
+Raising Cane's chicken fingers|m|🍗
+Wingstop lemon pepper wings|m|🍗
+Chipotle burrito bowl|m|🥣
+Chipotle burrito|m|🌯
+Subway footlong|m|🥖
+Subway cookies|m|🍪
+Jersey Mike's Italian sub|m|🥖
+Culver's ButterBurger|m|🍔
+Culver's cheese curds|m|🧀
+Dairy Queen Dilly Bar|m|🍫
+Starbucks Frappuccino|m|🥤
+Starbucks cake pop|m|🍭
+Cinnabon cinnamon roll|m|🌀
+Auntie Anne's pretzel|m|🥨
+Olive Garden Tour of Italy|m|🍝
+Texas Roadhouse rolls|m|🍞
+Outback Bloomin' Onion|m|🧅
+Cheesecake Factory cheesecake|m|🍰
+Waffle House waffle|m|🧇
+IHOP pancakes|m|🥞
+Denny's Grand Slam|m|🍳
+Cracker Barrel chicken n' dumplins|m|🍲
+White Castle sliders|m|🍔
+Jollibee Chickenjoy|m|🍗
+Jollibee spaghetti|m|🍝
+ShackBurger|m|🍔
+Panera broccoli cheddar bread bowl|m|🍲
+Panera mac and cheese|m|🧀
+Zaxby's chicken fingers|m|🍗
+Bojangles' Cajun Filet Biscuit|m|🍗
+Little Caesars Crazy Bread|m|🍞
+Costco hot dog|m|🌭
+Carl's Jr. Famous Star|m|🍔
+Steak 'n Shake milkshake|m|🥤
+Sbarro pizza|m|🍕
+Wawa hoagie|m|🥖
+Buc-ee's brisket sandwich|m|🦫
+Buc-ee's Beaver Nuggets|m|🦫
+Pizza Hut pan pizza|m|🍕
+Domino's pizza|m|🍕
+Little Caesars Hot-N-Ready|m|🍕
+Papa John's pizza|m|🍕
+Costco pizza|m|🍕
+Panda Express Orange Chicken|m|🐼🍊
+Panda Express chow mein|m|🐼
+Dunkin' Munchkins|m|🍩
+Dunkin' Boston Kreme|m|🍩
+Wingstop fries|m|🍟
+Habit Charburger|m|🍔
+Del Taco Del Combo Burrito|m|🌯
+Taco John's Potato Olés|m|🥔
+Checkers fries|m|🍟
+Rally's Big Buford|m|🍔
+Jack in the Box curly fries|m|🍟
+Sonic tots|m|🥔
+Sonic corn dog|m|🌭
+Dairy Queen Dip Cone|m|🍦
+Chuck E. Cheese pizza|m|🐭🍕
+Golden Corral chocolate fountain|m|🍫
+Red Robin Bottomless Steak Fries|m|🍟
+Applebee's boneless wings|m|🍗
+Chili's Triple Dipper|m|🍽️
+Buffalo Wild Wings|m|🍗
+Hooters wings|m|🍗
+Benihana fried rice|m|🍚
+P.F. Chang's lettuce wraps|m|🥬
+Shake Shack fries|m|🍟
+McDonald's McFlurry|m|🥤
+McDonald's sweet tea|m|🧊
+McDonald's Sprite|m|🥤
+Coca-Cola|k|🥤
+Diet Coke|k|🥤
+Coke Zero|k|🥤
+Cherry Coke|k|🍒🥤
+Vanilla Coke|k|🥤
+Pepsi|k|🥤
+Diet Pepsi|k|🥤
+Sprite|k|🥤
+7UP|k|🥤
+Mountain Dew|k|🥤
+Mountain Dew Code Red|k|🐟
+Mountain Dew Baja Blast|k|🥤
+Fanta Orange|k|🍊🥤
+Fanta Grape|k|🍇🥤
+Root beer|k|🥤
+Cream soda|k|🥤
+Ginger ale|k|🥤
+Sunkist|k|🍊🥤
+Big Red|k|🥤
+Cheerwine|k|🥤
+Squirt|k|🥤
+Fresca|k|🥤
+Jarritos|k|🥤
+Mexican Coke|k|🥤
+Lemonade|k|🍋
+Pink lemonade|k|🍋
+Strawberry lemonade|k|🍓🍋
+Arnold Palmer|k|🍋🍵
+Iced tea|k|🧊🍵
+Arizona Green Tea|k|🍵
+Snapple|k|🧃
+Orange juice|k|🍊🧃
+Apple juice|k|🍎🧃
+Grape juice|k|🍇🧃
+Cranberry juice|k|🧃
+Pineapple juice|k|🍍🧃
+Capri Sun|k|🧃
+Kool-Aid|k|🧃
+Sunny D|k|🍊
+Tang|k|🍊
+Gatorade|k|🥤
+Gatorade Cool Blue|k|💙🥤
+Powerade|k|🥤
+BodyArmor|k|🥤
+Prime Hydration|k|🥤
+Vitaminwater|k|🥤
+Ice cold water|k|💧
+Sparkling water|k|🫧
+LaCroix|k|🫧
+Coconut water|k|🥥
+Milk|k|🥛
+Chocolate milk|k|🍫🥛
+Strawberry milk|k|🍓🥛
+Banana milk|k|🍌🥛
+Hot chocolate|k|☕
+Coffee|k|☕
+Iced coffee|k|🧊☕
+Cold brew|k|☕
+Latte|k|☕
+Cappuccino|k|☕
+Espresso|k|☕
+Mocha|k|☕
+Caramel macchiato|k|☕
+Caramel Frappuccino|k|🥤
+Pumpkin Spice Latte|k|🎃☕
+Chai latte|k|☕
+Matcha latte|k|🍵
+Americano|k|☕
+Thai iced tea|k|🧡🍵
+Vietnamese iced coffee|k|☕
+Boba tea|k|🧋
+Taro milk tea|k|🧋
+Brown sugar boba|k|🧋
+Mango lassi|k|🥭
+Horchata|k|🥛
+Agua fresca|k|🍉
+Jamaica (hibiscus water)|k|🌺
+Smoothie|k|🥤
+Strawberry banana smoothie|k|🍓🍌
+Mango smoothie|k|🥭
+Green smoothie|k|🥬
+Protein shake|k|🥤
+Chocolate milkshake|k|🍫🥤
+Vanilla milkshake|k|🥤
+Oreo milkshake|k|🍪🥤
+Peanut butter milkshake|k|🥜🥤
+Chocolate malt|k|🍫
+Egg cream|k|🥚
+Slurpee|k|🥤
+ICEE|k|🧊
+Red Bull|k|⚡
+Monster Energy|k|⚡
+Celsius|k|⚡
+Starbucks Pink Drink|k|🩷
+Mango Dragonfruit Refresher|k|🐉
+Sparkling cider|k|🍎
+Apple cider|k|🍎
+Eggnog|k|🥚🥛
+Green tea|k|🍵
+Chamomile tea|k|🍵
+Yerba mate|k|🧉
+Kombucha|k|🥤
+Yakult|k|🥤
+Milo|k|🥤
+Ovaltine|k|🥤
+Nesquik|k|🐰
+Yoo-hoo|k|🍫
+Orange Julius|k|🍊
+Shirley Temple|k|🍒
+Italian soda|k|🥤
+Fruit punch|k|🥤
+Baja Blast Freeze|k|🧊
+Dunkin' iced coffee|k|🧊☕
+Blue raspberry slushie|k|🧊
+Cherry slushie|k|🍒🧊
+Hot apple cider|k|🍎
+Peppermint mocha|k|☕
+Vanilla latte|k|☕
+White chocolate mocha|k|☕
+Iced matcha|k|🍵
+Pepsi Wild Cherry|k|🍒
+Dr Pepper Cream Soda|k|🥤
+Mug Root Beer|k|🥤
+A&W Cream Soda|k|🥤
+Grape Crush|k|🍇
+Orange Crush|k|🍊
+Strawberry Crush|k|🍓
+Sweet lemonade|k|🍋
+Cherry limeade|k|🍒
+Watermelon juice|k|🍉
+Hawaiian Sun|k|🥤
+Calpico|k|🥤
+Milk tea|k|🧋
+Strawberry boba|k|🧋
+Mountain Dew Voltage|k|🥤
+Dr Pepper Zero|k|🥤
+Strawberry cheesecake ice cream|i|🍰
+Cherry Garcia|i|🍒
+Chunky Monkey|i|🐵🍨
+Half Baked|i|🍨
+Phish Food|i|🐟🍨
+Americone Dream|i|🍨
+Chocolate chip ice cream|i|🍨
+Chocolate fudge brownie ice cream|i|🍨
+Butter brickle ice cream|i|🍨
+Spumoni|i|🍨
+Peppermint ice cream|i|🍨
+Pralines and cream ice cream|i|🍨
+Banana ice cream|i|🍌🍨
+Peach ice cream|i|🍑🍨
+Mango ice cream|i|🥭🍨
+Coconut ice cream|i|🥥🍨
+Rum raisin ice cream|i|🍨
+Maple walnut ice cream|i|🍨
+Cake batter ice cream|i|🍨
+Brownie batter ice cream|i|🍨
+Cookie Monster ice cream|i|💙🍨
+Bubblegum ice cream|i|🍨
+Lemon ice cream|i|🍋🍨
+Raspberry ice cream|i|🍨
+Blueberry ice cream|i|🫐🍨
+Cinnamon ice cream|i|🍨
+Oreo ice cream sandwich|i|🍪🍦
+Chipwich|i|🍪🍦
+Fudgsicle|i|🍫
+Creamsicle|i|🍊
+Bomb Pop|i|🚀
+Snickers ice cream bar|i|🍫
+Magnum bar|i|🍫
+Good Humor Strawberry Shortcake bar|i|🍓
+Chocolate éclair bar|i|🍫
+Toasted almond bar|i|🍞
+King Cone|i|🍦
+Ben & Jerry's Tonight Dough|i|🍨
+Häagen-Dazs vanilla|i|🍨
+Blue Bell Homemade Vanilla|i|🍨
+Fried ice cream|i|🍨
+Ice cream nachos|i|🍨
+Frozen custard|i|🍨
+Soft serve twist|i|🍦
+Sundae cone|i|🍦
+Frosted Lemonade|i|🍋
+Milkshake float|i|🥤
+Ice cream pie|i|🥧
+Spumoni bar|i|🍨
+Cookies and cream bar|i|🍪
+Chocolate chunk cookie|o|🍫
+Sugar cookie bars|o|🍪
+Lemon cookies|o|🍋
+Red velvet cookie|o|❤️🍪
+Peanut butter chocolate chip cookie|o|🍫
+Coconut macaroons|o|🥥
+Almond cookies|o|🍪
+Butter cookies|o|🍪
+Danish butter cookies|o|🥫
+Pecan sandies|o|🍪
+Chocolate crinkle cookies|o|🍫
+Shortbread bars|o|🍞
+Keebler Fudge Stripes|o|🍫
+Keebler E.L. Fudge|o|🍫
+Pepperidge Farm Milano|o|🍪
+Girl Scout Tagalongs|o|🥜
+Girl Scout Trefoils|o|🍪
+Girl Scout Do-si-dos|o|🥜
+Lemonades Girl Scout cookies|o|🍋
+Oreo Double Stuf|o|🍪
+Golden Oreos|o|🍪
+Mint Oreos|o|🌿
+Peanut butter Oreos|o|🥜
+Chips Ahoy Chewy|o|🍪
+Soft Batch cookies|o|🍪
+Grandma's cookies|o|🍪
+Lorna Doone|o|🍪
+Vienna Fingers|o|🍪
+Mother's circus animal cookies|o|🦁
+Stella D'oro|o|🍪
+Pinwheels|o|🍪
+Mallomars|o|🍪
+Fudge cookies|o|🍪
+Ginger snaps|o|🍪
+Snickers cookie|o|🍪
+M&M brownie|o|🌈🍫
+Cookie dough brownie|o|🍫
+Smores cookie|o|🔥
+Churro cookie|o|🍪
+Cinnamon roll cookie|o|🌀
+Cookies and cream cookie|o|🍪
+Birthday cake cookie|o|🎉
+Strawberry pie|p|🍓
+Pecan tart|p|🥧
+Peach turnover|p|🍑
+Cherry turnover|p|🍒
+Blueberry muffin top|p|🫐
+Lemon tart|p|🍋
+Chocolate pie|p|🍫
+Buttermilk pie|p|🥧
+Coconut custard pie|p|🥥
+Pumpkin cheesecake pie|p|🎃
+Hand pies|p|🥧
+Fried pies|p|🥧
+Hostess fruit pie|p|🥧
+Apple dumplings|p|🍎
+Peach crumble|p|🍑
+Blueberry cobbler|p|🫐
+Blackberry cobbler|p|🥧
+Cherry cobbler|p|🍒
+Apple cobbler|p|🍎
+Strawberry crumble|p|🍓
+Banana bread pudding|p|🍌
+Pain au chocolat|p|🥐
+Almond croissant|p|🥐
+Cheese danish|p|🥐
+Cinnamon twist|p|🌀
+Sticky buns|p|🍯
+Pecan rolls|p|🍞
+Orange rolls|p|🍊
+Elephant ears|p|🥧
+Sopapilla cheesecake|p|🍰
+Zeppole|p|🥧
+Sfogliatella|p|🥧
+Struffoli|p|🥧
+Kouign-amann|p|🥧
+Palmiers|p|🥧
+Cream horns|p|🥧
+Puff pastry twists|p|🥧
+Strawberry Danish|p|🍓
+Chicken teriyaki|a|🍗
+Beef teriyaki|a|🥩
+Pork katsu|a|🍗
+Shrimp fried noodles|a|🍤
+Crispy orange beef|a|🥩
+Honey sesame chicken|a|🍗
+Coconut curry|a|🥥
+Chicken pad thai|a|🍗
+Shrimp pad thai|a|🍤
+Thai fried rice|a|🍚
+Basil fried rice|a|🍚
+Chicken satay skewers|a|🍗
+Pork dumplings|a|🥟
+Chicken dumplings|a|🥟
+Shrimp dumplings|a|🥟
+Vegetable dumplings|a|🥟
+Xiao long bao|a|🥢
+Scallion pancake wrap|a|🥞
+Beef noodle soup|a|🍜
+Chicken congee|a|🍗
+Zongzi|a|🥢
+Turnip cake|a|🍰
+Egg tart dim sum|a|🥚
+Sticky rice in lotus leaf|a|🍚
+Sweet and sour shrimp|a|🍤
+Lemon pepper shrimp|a|🍤
+Kung pao shrimp|a|🍤
+Garlic eggplant|a|🍆
+Chinese broccoli|a|🥦
+Bok choy stir-fry|a|🥬
+Vegetable lo mein|a|🍜
+Beef lo mein|a|🍜
+Chicken egg rolls|a|🥟
+Pork egg rolls|a|🥟
+Cream cheese wontons|a|🧀
+Teriyaki chicken skewers|a|🍗
+Korean BBQ wings|a|🍗
+Gochujang chicken|a|🍗
+Spicy pork bulgogi|a|🍖
+Japanese fried chicken|a|🍗
+Chicken yakisoba|a|🍗
+Beef udon|a|🍜
+Kitsune udon|a|🍜
+Cold soba|a|🍜
+Miso salmon|a|🐟
+Salmon teriyaki|a|🐟
+Chicken curry rice|a|🍗
+Katsu sando|a|🥪
+Tamagoyaki|a|🥚
+Chawanmushi|a|🥚
+Natto|a|🥢
+Yakiniku|a|🥢
+Shabu-shabu|a|🥢
+Sukiyaki|a|🥢
+Ramen eggs|a|🥚
+Chashu pork|a|🍖
+Spicy miso ramen|a|🍜
+Black garlic ramen|a|🧄
+Shrimp chips with dip|a|🍤
+Chili oil dumplings|a|🌶️
+Mala hot pot|a|🌶️
+Beef chow fun|a|🥩
+Chicken chow fun|a|🍗
+Wonton noodle soup|a|🍜
+Roast pork buns|a|🍖
+Egg custard buns|a|🥚
+Pineapple buns|a|🍍
+Lotus seed buns|a|🥢
+Sesame balls|a|🥢
+Mooncakes|a|🥮
+Tangyuan|a|🥢
+Red bean ice|a|🍧
+Chicken tikka|a|🍗
+Lamb curry|a|🍛
+Goat curry|a|🍛
+Paneer butter masala|a|🍛
+Malai kofta|a|🥢
+Rajma chawal|a|🥢
+Pav bhaji|a|🥢
+Vada pav|a|🥢
+Masala dosa|a|🍛
+Idli|a|🥢
+Uttapam|a|🥢
+Chole bhature|a|🥢
+Aloo paratha|a|🥢
+Jalebi|a|🥢
+Rasmalai|a|🥢
+Kheer|a|🥢
+Southern fried chicken|m|🍗
+Hot chicken tenders|m|🍗
+Chicken parmesan sliders|m|🍗
+Buffalo chicken tenders|m|🍗
+Honey butter chicken|m|🍗
+Cajun fried chicken|m|🍗
+Pecan-crusted chicken|m|🍗
+Chicken spaghetti|m|🍝
+Chicken tacos al carbon|m|🍗
+Smoked chicken|m|🍗
+Beer can chicken|m|🍗
+Spatchcock chicken|m|🍗
+Chicken and sausage gumbo|m|🍗
+Shrimp and sausage jambalaya|m|🌭
+Cajun rice|m|🍚
+BBQ pulled chicken|m|🍗
+Smoked sausage|m|🌭
+Hot links|m|🍽️
+Rib tips|m|🍽️
+Pork steaks|m|🥩
+Country-style ribs|m|🍖
+Ham and beans|m|🫘
+Pinto beans and cornbread|m|🍞
+Neck bones|m|🍽️
+Fried chicken wings|m|🍗
+Turkey legs|m|🦃
+Cornish hen|m|🍗
+Chicken fried chicken|m|🍗
+Liver and onions|m|🧅
+Meatball sliders|m|🍝
+BBQ meatballs|m|🍝
+Cocktail weenies|m|🍽️
+Philly cheesesteak egg rolls|m|🥟
+Cheeseburger sliders|m|🍔
+Salisbury steak TV dinner|m|🥩
+Steak and potatoes|m|🥔
+Surf and turf|m|🍽️
+Steak and lobster|m|🦞
+Prime rib sandwich|m|🥪
+Beef tips and rice|m|🍚
+Chicken and gravy|m|🍗
+Beef and noodles|m|🍜
+Chicken and noodles|m|🍗
+Cheesy chicken and rice|m|🍗
+Chicken divan|m|🍗
+Chicken fried rice bowl|m|🍚
+Taco casserole|m|🌮
+Enchilada casserole|m|🌯
+Breakfast for dinner|m|🍽️
+Corn dog nuggets|m|🌽
+Mini corn dogs|m|🌽
+Chicken nugget Happy Meal|m|🍗
+Fish fry|m|🐟
+Pork tenderloin sandwich|m|🥪
+Loose meat sandwich|m|🥪
+Hot beef sundae|m|🍨
+Spam and eggs|m|🥚
+Fried Spam|m|🍽️
+Chicken bog|m|🍗
+Hoppin' John|m|🍽️
+Shrimp creole|m|🍤
+Chicken étouffée|m|🍗
+Grillades and grits|m|🍽️
+Fried alligator|m|🍽️
+Frog legs|m|🍽️
+Chicken-fried bacon|m|🍗
+Bacon-wrapped hot dogs|m|🌭
+Elk burger|m|🍔
+Bison burger|m|🍔
+Lamb burger|m|🍔
+Chicken burger|m|🍗
+Salmon burger|m|🍔
+Teriyaki burger|m|🍔
+Hawaiian chicken|m|🍗
+Huli huli chicken|m|🍗
+Kalbi ribs|m|🍖
+Cheese balls|s|🧀
+Utz cheese balls|s|🧀
+Pizza Goldfish|s|🍕
+Flavor Blasted Goldfish|s|🐟
+Cheez-It Grooves|s|🍿
+Wheat Thins Ranch|s|🍿
+Triscuit Rosemary|s|🍿
+Rice Krispies Treats bar|s|🍚
+Fruit leather|s|🍿
+Banana pudding cup|s|🍮
+Jell-O pudding cup|s|🍮
+Snack Pack pudding|s|🍮
+Mott's applesauce cup|s|🍎
+Craisins|s|🍿
+Yogurt raisins|s|🍿
+Chocolate-covered raisins|s|🍫`;
+const fkey=n=>n.toLowerCase().replace(/'s/g,'').replace(/[^a-z0-9]/g,'');
+const ALL=(()=>{const seen=new Set(),out=[];for(const f of [...FOODS,...DESS]){const k=fkey(f.n);if(!seen.has(k)){seen.add(k);out.push(f.n+'|'+f.c+'|'+f.e)}}return parse(out.join('\n')+'\n'+EXTRA)})();
+const CAT={m:['Meal','#ff9f43'],c:['Chips','#f2b935'],d:['Dessert','#ff8fb1'],k:['Drink','#4cc3d9'],s:['Snack','#9ccf6b'],e:['Cake','#ff8fb1'],i:['Ice cream','#6fd0e8'],o:['Cookie','#d9a066'],y:['Candy','#ff7a9c'],p:['Pie & pastry','#ff9f43'],
+f:['Fruit','#9ccf6b'],v:['Veggie','#5fbf7a'],b:['Breakfast','#ffd25e'],w:['Sandwich & burger','#e0a458'],z:['Pizza','#ff7043'],n:['Pasta','#f5c26b'],u:['Soup','#e8956f'],l:['Salad','#7fd18b'],q:['Seafood','#4cc3d9'],a:['Asian','#ff6b6b'],x:['Mexican & Latin','#ffa94d'],g:['World food','#c792ea'],h:['Side','#d9b26b'],j:['Cheese','#ffe066'],r:['Bread','#d9a066']};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const plate=f=>`<span class="plate" style="--c:${CAT[f.c][1]}"><span class="emo">${f.e}</span></span>`;
+const SWORD=`<svg viewBox="0 0 60 220" aria-hidden="true"><path d="M30 2 L40 22 L40 150 L20 150 L20 22Z" fill="#e8f1f5"/><path d="M30 6 L30 150" stroke="#a9bcc6" stroke-width="3"/>
+<path d="M22 24 L22 148" stroke="#fff" stroke-width="3"/><rect x="2" y="150" width="56" height="12" rx="6" fill="#ffd25e"/>
+<rect x="23" y="162" width="14" height="40" rx="5" fill="#7a3b2e"/><path d="M23 172 H37 M23 182 H37 M23 192 H37" stroke="#5a271d" stroke-width="3"/><circle cx="30" cy="208" r="9" fill="#ffd25e"/></svg>`;
+const CROWN=`<svg class="crown" viewBox="0 0 100 60" aria-hidden="true"><path d="M8 52 L4 12 L28 32 L50 4 L72 32 L96 12 L92 52Z" fill="#ffd25e"/><rect x="8" y="48" width="84" height="10" rx="4" fill="#f0b429"/><circle cx="50" cy="30" r="6" fill="#ff5b6e"/><circle cx="26" cy="40" r="4" fill="#5ad1e6"/><circle cx="74" cy="40" r="4" fill="#5ad1e6"/></svg>`;
+
+const $=id=>document.getElementById(id);
+const GAMER=document.querySelector('.blob').outerHTML.replace('class="blob"','').replace(/aria-label="[^"]*"/,'aria-hidden="true"');
+const arena=$('arena'),reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const show=id=>{for(const s of ['menu','game','end'])$(s).hidden=s!==id;scrollTo({top:0})};
+
+// rainbow title + food parade
+const COLS=['#ff5b6e','#ffd25e','#5ad1e6','#b8e986','#ff8fb1','#ff9f43','#9be7ff'];
+const wyr=$('wyr');let ci=0;
+wyr.innerHTML=wyr.textContent.split(' ').map(w=>'<span style="animation:none;display:inline-block">'+[...w].map(ch=>{const k=ci++;return `<span style="color:${COLS[k%COLS.length]};animation-delay:${k*.12}s">${ch}</span>`}).join('')+'</span>').join(' ');
+const pe=FOODS.map(f=>[...f.e][0]).join(' ');$('parade').textContent=pe+' '+pe;
+
+// "Food Fight" remix: starts cute and calm, builds up, then drops into a hard phonk beat
+// (cowbell lead, distorted 808, trap hats, breakcore fills). All made live in the browser.
+let ac=null,master=null,crunch=null,tick=null,nextT=0,step=0,musicOn=true,sfxOn=true,NB=null;
+try{musicOn=localStorage.getItem('wyr-music')!=='off';sfxOn=localStorage.getItem('wyr-sfx')!=='off'}catch(e){}
+const hz=m=>440*2**((m-69)/12),SX=60/130/4;
+const CH=[[57,60,64],[53,57,60],[55,59,62],[52,56,59]],BASS=[33,29,31,28];
+const LEAD=[0,null,0,3,null,7,null,5,0,null,3,null,7,8,7,5],LEAD2=[12,null,10,7,null,7,8,null,7,null,5,3,null,3,5,7];
+function initAudio(){
+  try{
+    if(!ac){
+      try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
+      ac=new (window.AudioContext||window.webkitAudioContext)();
+      const b=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;NB=b;
+      const comp=ac.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=4;
+      master=ac.createGain();master.gain.value=.6;master.connect(comp).connect(ac.destination);
+      const n=2048,c=new Float32Array(n);for(let i=0;i<n;i++){const x=i/n*2-1;c[i]=Math.tanh(x*5)}
+      const ws=ac.createWaveShaper();ws.curve=c;const wg=ac.createGain();wg.gain.value=.32;crunch=ws;ws.connect(wg).connect(master);
+    }
+    if(ac.state!=='running')ac.resume();
+  }catch(e){}
+  return !!ac;
+}
+function env(g,t,v,a,d){g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+d)}
+function osc(type,f,t,d,v,a=.005,dest=master){const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.setValueAtTime(f,t);env(g,t,v,a,d);o.connect(g).connect(dest);o.start(t);o.stop(t+d+.05);return o}
+function noise(t,d,v,type,f,q=1,dest=master){const s=ac.createBufferSource(),fl=ac.createBiquadFilter(),g=ac.createGain();s.buffer=NB;fl.type=type;fl.frequency.setValueAtTime(f,t);fl.Q.value=q;env(g,t,v,.002,d);s.connect(fl).connect(g).connect(dest);s.start(t,Math.random());s.stop(t+d+.05);return fl}
+function kick(t,v=.9){const o=osc('sine',150,t,.4,v,.002);o.frequency.exponentialRampToValueAtTime(42,t+.12);noise(t,.02,.25,'highpass',3000)}
+function snare(t,v=.4,p=0){noise(t,.16,v,'bandpass',1900+p,.9);const o=osc('triangle',210+p/8,t,.09,v*.6);o.frequency.exponentialRampToValueAtTime(140,t+.08)}
+function clap(t,v=.3){for(const k of [0,.011,.022])noise(t+k,.12,v,'bandpass',1500,.7)}
+function hat(t,v=.05,open){noise(t,open?.22:.04,v,'highpass',8000)}
+function b808(m,t,len,glide){const o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.setValueAtTime(hz(m+12),t);o.frequency.exponentialRampToValueAtTime(hz(m),t+.04);
+  if(glide)o.frequency.exponentialRampToValueAtTime(hz(m+glide),t+len*.7);g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.9,t+.005);g.gain.setValueAtTime(.9,t+len*.55);g.gain.exponentialRampToValueAtTime(.0001,t+len);
+  o.connect(g).connect(crunch);o.start(t);o.stop(t+len+.05)}
+function cowbell(m,t,v=.09){const f=hz(m),bp=ac.createBiquadFilter(),g=ac.createGain();bp.type='bandpass';bp.frequency.value=f*1.6;bp.Q.value=1.2;env(g,t,v,.002,.32);bp.connect(g).connect(master);
+  for(const r of [1,1.48]){const o=ac.createOscillator();o.type='square';o.frequency.value=f*r;o.connect(bp);o.start(t);o.stop(t+.36)}}
+function pad(ch,t,v){for(const m of ch){osc('triangle',hz(m),t,SX*16,v,.25);osc('sawtooth',hz(m)*1.004,t,SX*16,v*.25,.4)}}
+function pluck(m,t,v=.05){osc('triangle',hz(m),t,.35,v,.003);osc('sine',hz(m+12),t,.2,v*.5,.003)}
+function swell(t,d){const s=ac.createBufferSource(),fl=ac.createBiquadFilter(),g=ac.createGain();s.buffer=NB;s.loop=true;fl.type='bandpass';fl.Q.value=2;fl.frequency.setValueAtTime(400,t);fl.frequency.exponentialRampToValueAtTime(9000,t+d);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.22,t+d);g.gain.linearRampToValueAtTime(.0001,t+d+.02);s.connect(fl).connect(g).connect(master);s.start(t);s.stop(t+d+.05)}
+function crash(t,v=.16){noise(t,1.4,v,'highpass',5000,.5)}
+
+// forest-rage sound kit (original sounds in a Trees Hate You spirit)
+function slip(t,up,v=.09){const o=ac.createOscillator(),lfo=ac.createOscillator(),lg=ac.createGain(),g=ac.createGain();o.type='sine';
+  o.frequency.setValueAtTime(up?320:1500,t);o.frequency.exponentialRampToValueAtTime(up?1500:300,t+.45);lfo.frequency.value=11;lg.gain.value=up?20:35;lfo.connect(lg).connect(o.frequency);
+  env(g,t,v,.01,.5);o.connect(g).connect(master);o.start(t);lfo.start(t);o.stop(t+.55);lfo.stop(t+.55);
+  const f=noise(t,.18,v*1.6,'bandpass',2600,6);f.frequency.exponentialRampToValueAtTime(1200,t+.18)}
+function bonk(t,v=.22){const o=osc('triangle',560,t,.16,v,.001);o.frequency.exponentialRampToValueAtTime(330,t+.1);osc('sine',1350,t,.05,v*.4,.001);noise(t,.03,v*.8,'bandpass',1100,2)}
+function crack(t,v=.3){for(let k=0;k<5;k++)noise(t+k*.018+Math.random()*.01,.025,v*(1-k*.15),'highpass',1800+k*300);osc('sine',90,t+.02,.25,v*.9,.002).frequency.exponentialRampToValueAtTime(45,t+.25)}
+function leaves(t,d=.5,v=.08){for(let k=0;k<6;k++)noise(t+k*d/7+Math.random()*.03,.09,v*(.5+Math.random()*.5),'bandpass',3500+Math.random()*2500,.8)}
+function chirp(t,v=.03){for(let k=0;k<3;k++){const o=osc('sine',2600,t+k*.09,.06,v,.004);o.frequency.exponentialRampToValueAtTime(3900,t+k*.09+.05)}}
+function playStep(s,t){
+  const bar=Math.floor(s/16),b=s%16,sec=bar%16,ch=CH[bar%4],root=ch[0];
+  const intro=sec<4,build=sec>=4&&sec<8,drop=sec>=8;
+  if(b===0)pad(ch,t,drop?.012:.02);
+  if(!drop){const arp=[0,3,6,8,11,14].indexOf(b);if(arp>=0)pluck(ch[arp%3]+12+(arp>2?12:0),t,intro?.05:.04)}
+  if(intro){if(b===0||b===10)kick(t,.5);if(b===8)snare(t,.18);if(b%4===2)hat(t,.025);if(b===12&&sec%2===1)slip(t,sec===1,.07);if(b===0&&sec===3)leaves(t,.8,.05)}
+  if(build){
+    if(sec<7){if(b%4===0)kick(t,.75);if(b===4||b===12)clap(t,.25);if(b%2===0)hat(t,.035)}
+    else{const every=b<8?4:b<12?2:1;if(b%every===0)snare(t,.15+b*.015,b*60)}
+    if(sec===6&&b===0)swell(t,SX*32);if(b===2&&sec<7)bonk(t,.12);if(sec===7&&b===15)slip(t,false,.08);
+  }
+  if(drop){
+    const odd=bar%2===1,last=sec===15&&b>=8;
+    if(b===0&&(sec===8||sec===12))crash(t);
+    if(!last){if(b===0||b===7||b===10||(odd&&b===14))kick(t);if(b===4||b===12){snare(t,.35);clap(t,.22)}}
+    else{snare(t,.3,(b-8)*90);if(b%2===0)kick(t,.6);if(b===15)hat(t,.08,true)}
+    const roll=odd&&b>=12&&!last;
+    if(roll){for(let k=0;k<3;k++)hat(t+k*SX/3,.045)}else if(!last)hat(t,b%4===2?.07:.04,b===14&&!odd);
+    if(!last&&(b===3||b===11)&&!odd)bonk(t,.14);if(!last&&b===6&&odd)bonk(t,.12);
+    if(b===12&&sec>=10&&sec<=14)slip(t,sec===12,.07);if(b===8&&sec===9)slip(t,true,.06);if(b===0&&sec===8)crack(t,.25);
+    const lead=sec>=12?LEAD2:LEAD,mel=lead[b];if(mel!=null)cowbell(root+24+mel,t,.075);
+    // 808 follows the cowbell: same notes, two octaves down, sliding into the next melody note
+    if(mel!=null){let nx=b+1;while(nx<16&&lead[nx]==null)nx++;const len=Math.min(.6,(nx-b)*SX*.95),bn=root-24+(mel%12),next=nx<16?root-24+(lead[nx]%12):bn;
+      b808(bn,t,Math.max(.12,len),odd&&next!==bn&&nx-b>1?next-bn:0)}
+  }
+}
+function startMusic(){
+  if(!initAudio())return;
+  if(!tick){nextT=ac.currentTime+.1;tick=setInterval(()=>{if(ac.state!=='running')return;while(nextT<ac.currentTime+.3){playStep(step++,nextT);nextT+=SX}if(nextT<ac.currentTime)nextT=ac.currentTime+.05},60)}
+}
+function stopMusic(){if(tick){clearInterval(tick);tick=null}step=0}
+function setMusic(on){musicOn=on;$('music').textContent=on?'♪ Music on':'♪ Music off';$('music').setAttribute('aria-pressed',on);
+  try{localStorage.setItem('wyr-music',on?'on':'off')}catch(e){}on?startMusic():stopMusic()}
+function setSfx(on){sfxOn=on;$('sfx').textContent=on?'💥 Sound FX on':'💥 Sound FX off';$('sfx').setAttribute('aria-pressed',on);
+  try{localStorage.setItem('wyr-sfx',on?'on':'off')}catch(e){}if(on)initAudio()}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&ac&&ac.state!=='running')try{ac.resume()}catch(e){}});
+
+// sound effects
+const fx=fn=>{if(!sfxOn||!initAudio())return;try{fn(ac.currentTime+.01)}catch(e){}};
+const sfxPick=()=>fx(t=>{const o=osc('square',880,t,.12,.06);o.frequency.exponentialRampToValueAtTime(1760,t+.08);cowbell(84,t+.02,.07)});
+function swoosh(){fx(t=>{const s=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain();s.buffer=NB;f.type='bandpass';f.Q.value=2;
+  f.frequency.setValueAtTime(600,t);f.frequency.exponentialRampToValueAtTime(5000,t+.35);g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.3,t+.15);g.gain.exponentialRampToValueAtTime(.0001,t+.4);
+  s.connect(f).connect(g).connect(master);s.start(t);s.stop(t+.45)})}
+const sfxBoom=()=>fx(t=>{const o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.setValueAtTime(110,t);o.frequency.exponentialRampToValueAtTime(38,t+.5);
+  g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(1,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+1.4);o.connect(g).connect(crunch);o.start(t);o.stop(t+1.5);noise(t,.08,.35,'lowpass',900)});
+const sfxChomp=()=>fx(t=>{for(const k of [0,.13,.26])noise(t+k,.07,.35,'bandpass',700,1.5)});
+const sfxHorn=(n=3)=>fx(t=>{for(let i=0;i<n;i++){const s=t+i*.16,d=i===n-1?.55:.12;for(const f of [466,470,233,699]){const o=osc('sawtooth',f,s,d,.05,.01);o.frequency.setValueAtTime(f*.94,s);o.frequency.linearRampToValueAtTime(f,s+.04)}}});
+const sfxTree=()=>fx(t=>{crack(t,.3);bonk(t+.02,.25);leaves(t+.05,.4,.07);slip(t+.25,false,.1)});
+const sfxScratch=()=>fx(t=>{const f=noise(t,.32,.4,'bandpass',300,4);f.frequency.setValueAtTime(300,t);f.frequency.exponentialRampToValueAtTime(2400,t+.1);f.frequency.exponentialRampToValueAtTime(250,t+.22);f.frequency.exponentialRampToValueAtTime(1800,t+.3)});
+const sfxCrown=()=>fx(t=>{[0,4,7,12].forEach((m,i)=>osc('triangle',hz(84+m),t+i*.06,.4,.06))});
+const thud=()=>fx(t=>{kick(t);bonk(t,.25);crash(t,.08)});
+let podT=[];function podiumSounds(){podT.forEach(clearTimeout);fx(t=>{for(let i=0;i<46;i++)snare(t+i*.058,.04+i*.005,i*8)});podT=[setTimeout(thud,10),setTimeout(thud,1310),setTimeout(sfxWin,2700)]}
+const sfxWin=()=>fx(t=>{sfxHorn(4);[0,4,7,12,7,12,16].forEach((m,i)=>{osc('square',hz(72+m),t+.7+i*.12,.3,.05);osc('triangle',hz(60+m),t+.7+i*.12,.3,.06)});crash(t+.7,.2);kick(t+.7)});
+$('music').textContent=musicOn?'♪ Music on':'♪ Music off';$('sfx').textContent=sfxOn?'💥 Sound FX on':'💥 Sound FX off';
+
+// game
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const MODES={caseoh:{name:'CaseOh Mode',list:FOODS,key:'caseoh-champs'},dessert:{name:'Dessert Mode',list:DESS,key:'dessert-champs'},all:{name:'All Foods',list:ALL,key:'all-champs'}};
+let S,hist=[],busy=false,L=FOODS;
+const saveKey=m=>'wyr-save-'+m;
+function save(){try{if(S&&!S.done)localStorage.setItem(saveKey(S.mode),JSON.stringify(S))}catch(e){}}
+function clearSave(m){try{localStorage.removeItem(saveKey(m))}catch(e){}}
+function beginRound(){S.alive=S.pool.length;S.i=0;S.bye=null;if(S.pool.length%2){S.bye=S.pool.pop();S.next.push(S.bye)}}
+function start(mode,fresh){
+  L=MODES[mode].list;$('gtitle').textContent=MODES[mode].name;
+  let saved=null;if(!fresh){try{saved=JSON.parse(localStorage.getItem(saveKey(mode))||'null')}catch(e){}}
+  if(saved&&saved.mode===mode&&saved.size===L.length&&!saved.done&&saved.pool&&saved.pool.length>1&&saved.pool.every(id=>L[id])){S=saved;S.back=true}
+  else{clearSave(mode);S={mode,size:L.length,round:1,pool:shuffle(L.map(f=>f.id)),next:[],i:0,wins:{},out:{},alive:L.length,bye:null};beginRound()}
+  hist=[];busy=false;show('game');render();if(musicOn)startMusic();initAudio();
+}
+function roundName(){if(S.alive===2)return 'The Final';if(S.alive<=4)return 'Semifinals';if(S.alive<=8)return 'Quarterfinals';return 'Round '+S.round}
+function render(){
+  const played=Object.keys(S.out).length,total=L.length-1;
+  $('round').textContent=roundName();
+  $('count').textContent=`Match ${S.i/2+1} of ${S.pool.length/2} · ${S.alive} foods left`;
+  $('prog').style.width=(played/total*100)+'%';
+  $('undo').disabled=!hist.length;
+  $('bye').textContent=S.back?'Welcome back! You picked up right where you left off. Tap Restart to start over.':S.bye!=null&&S.i===0?`${L[S.bye].n} got a free pass to the next round.`:'';
+  delete S.back;save();
+  const a=L[S.pool[S.i]],b=L[S.pool[S.i+1]];
+  const card=(f,k)=>`<button class="card" type="button" data-s="${k}"><span class="key">${k?'→':'←'}</span>${plate(f)}<b>${esc(f.n)}</b><span class="tag">${CAT[f.c][0]}</span></button>`;
+  arena.innerHTML=card(a,0)+'<div class="vs">OR</div>'+card(b,1)+`<div class="sword" id="sword">${SWORD}</div><div class="eater" id="eater">${GAMER}</div>`;
+}
+function pick(side){
+  if(busy||S.done||$('game').hidden)return;busy=true;
+  hist.push(JSON.stringify(S));if(hist.length>30)hist.shift();
+  const w=S.pool[S.i+side],l=S.pool[S.i+1-side],game=S;
+  S.wins[w]=(S.wins[w]||0)+1;S.out[l]=S.round;S.next.push(w);
+  const cards=arena.querySelectorAll('.card'),we=cards[side],le=cards[1-side];
+  sfxPick();
+  we.classList.add('win');slay(we,le,()=>{if(S!==game)return;busy=false;advance()});
+}
+function slay(we,le,done){
+  const ko=()=>{le.classList.add('cut');le.insertAdjacentHTML('beforeend','<span class="ko">SLAIN</span>');sfxBoom();sfxTree()};
+  if(reduce){swoosh();ko();setTimeout(done,450);return}
+  const sw=$('sword'),A=arena.getBoundingClientRect(),W=we.getBoundingClientRect(),L=le.getBoundingClientRect();
+  const wx=W.left-A.left+W.width/2,wy=W.top-A.top+W.height/2,lx=L.left-A.left+L.width/2,ly=L.top-A.top+L.height/2;
+  const dir=lx>wx?1:-1,t=(x,y,r,s)=>`translate(${x}px,${y}px) translate(-50%,-50%) rotate(${r}deg) scale(${s})`;
+  sw.animate([
+    {transform:t(wx,wy-20,-20*dir,.2),opacity:0},
+    {transform:t(wx,wy-40,-35*dir,1),opacity:1,offset:.28},
+    {transform:t(lx-dir*30,ly-60,20*dir,1.05),opacity:1,offset:.55},
+    {transform:t(lx+dir*20,ly+30,115*dir,1.05),opacity:1,offset:.75},
+    {transform:t(lx+dir*40,ly+50,125*dir,.9),opacity:0}
+  ],{duration:950,easing:'cubic-bezier(.5,0,.3,1)',fill:'forwards'});
+  setTimeout(swoosh,420);setTimeout(ko,640);setTimeout(()=>{if(S.mode==='caseoh'){eat(we);setTimeout(sfxChomp,700)}else{crownIt(we);sfxCrown()}},760);setTimeout(done,1900);
+}
+function crownIt(we){
+  const pl=we.querySelector('.plate');if(!pl)return;
+  const C=we.getBoundingClientRect(),P=pl.getBoundingClientRect(),d=document.createElement('div');
+  d.className='wcrown';d.innerHTML=CROWN;we.appendChild(d);
+  const w=d.offsetWidth,h=w*.6,x=P.left-C.left+P.width/2-w/2,y=Math.max(2,P.top-C.top-h*.55);
+  d.animate([{transform:`translate(${x}px,${y-140}px) rotate(-25deg) scale(.6)`,opacity:0},{transform:`translate(${x}px,${y}px) rotate(6deg) scale(1.1)`,opacity:1,offset:.55,easing:'ease-out'},
+    {transform:`translate(${x}px,${y-10}px) rotate(-3deg) scale(1)`,opacity:1,offset:.75},{transform:`translate(${x}px,${y}px) rotate(0) scale(1)`,opacity:1}],{duration:700,fill:'forwards'});
+}
+function eat(we){
+  const ea=$('eater');if(!ea)return;
+  const A=arena.getBoundingClientRect(),W=we.getBoundingClientRect(),w=ea.offsetWidth,h=w*150/160;
+  const x=W.left-A.left+W.width/2-w/2,top=W.top-A.top-h*.85,mouthY=h*101/150,fall=W.top-A.top+W.height/2-mouthY;
+  const T=(y,sc)=>`translate(${x}px,${y}px) scale(${sc})`;
+  ea.animate([{transform:T(top-40,.7),opacity:0},{transform:T(top,1),opacity:1,offset:.18},{transform:T(top-14,1.05),opacity:1,offset:.42},
+    {transform:T(fall,1.1),opacity:1,offset:.6,easing:'ease-in'},{transform:T(fall,1.1),opacity:1,offset:.86},{transform:T(fall+60,.8),opacity:0}],{duration:1100,fill:'forwards'});
+  const jaw=ea.querySelector('.jaw');
+  if(jaw)jaw.animate([{transform:'scale(1)'},{transform:'scale(1.9,2.6)',offset:.3},{transform:'scale(1.9,2.6)',offset:.66},{transform:'scale(1.1,.2)',offset:.74},{transform:'scale(1.2,1)',offset:.82},{transform:'scale(1.1,.25)',offset:.9},{transform:'scale(1)'}],{duration:1100,fill:'forwards'});
+  we.style.transformOrigin='50% 50%';
+  we.animate([{transform:'scale(1.04)',opacity:1},{transform:'scale(1.04)',opacity:1,offset:.5},{transform:'scale(.35) translateY(10px)',opacity:1,offset:.64},{transform:'scale(0)',opacity:0,offset:.7},{transform:'scale(0)',opacity:0}],{duration:1100,fill:'forwards'});
+}
+function advance(){
+  if($('game').hidden)return;
+  S.i+=2;
+  if(S.i>=S.pool.length){S.pool=shuffle(S.next);S.next=[];S.round++;if(S.pool.length===1){finish();return}beginRound();sfxHorn(S.pool.length<=2?4:3)}
+  render();
+}
+function finish(){
+  S.done=true;clearSave(S.mode);const champ=S.pool[0];S.out[champ]=S.round+1;
+  const order=L.map(f=>f.id).sort((x,y)=>(S.out[y]-S.out[x])||((S.wins[y]||0)-(S.wins[x]||0)));
+  const max=Math.max(1,...order.map(id=>S.wins[id]||0)),c=L[champ],ru=L[order[1]];
+  const pod=(id,place,d)=>{const f=L[id];return `<div class="pod p${place}" style="--d:${d}s;--w:${d+.55}s"><div class="who">${place===1?CROWN:''}${plate(f)}<b>${esc(f.n)}</b></div><div class="blk">${place}</div></div>`};
+  const third=order[2]!=null?order[2]:order[1];
+  let conf='';for(let i=0;i<46;i++)conf+=`<span class="conf" style="left:${Math.random()*100}%;background:${COLS[i%COLS.length]};--d:${3.1+Math.random()*.9}s;--x:${(Math.random()*160-80)|0}px;--r:${(Math.random()*900-450)|0}deg"></span>`;
+  $('champ').innerHTML=`<div class="podium">${pod(order[1],2,1.3)}${pod(champ,1,2.7)}${pod(third,3,0)}</div>${conf}<div class="podtxt"><small>Champion</small><h2>${esc(c.n)}</h2><p>Won all ${S.wins[champ]||0} of its matchups. Runner-up: ${esc(ru.n)}.</p></div>`;
+  podiumSounds();
+  const row=(id,i)=>{const f=L[id],w=S.wins[id]||0;
+    return `<li><span class="rk">${i+1}</span><span class="emo">${f.e}</span><span class="nm">${esc(f.n)}<span>${CAT[f.c][0]}</span></span><span class="w">${w} win${w===1?'':'s'}</span><span class="m"><i style="width:${w/max*100}%"></i></span></li>`};
+  $('top').innerHTML=order.slice(0,10).map(row).join('');
+  $('rest').innerHTML=order.slice(10).map((id,i)=>row(id,i+10)).join('');
+  $('allsum').textContent=`See all ${L.length} foods`;
+  let past=[];try{past=JSON.parse(localStorage.getItem(MODES[S.mode].key)||'[]');past.unshift(c.n);past=past.slice(0,8);localStorage.setItem(MODES[S.mode].key,JSON.stringify(past))}catch(e){past=[c.n]}
+  $('pastwrap').innerHTML=past.length>1?`<h3>Your past champions</h3><div class="past">${past.map(n=>`<span>${esc(n)}</span>`).join('')}</div>`:'';
+  show('end');
+}
+arena.addEventListener('click',e=>{const c=e.target.closest('.card');if(c)pick(+c.dataset.s)});
+addEventListener('keydown',e=>{if(e.key==='ArrowLeft')pick(0);else if(e.key==='ArrowRight')pick(1)});
+$('queso').addEventListener('click',()=>start('caseoh'));
+$('dessert').addEventListener('click',()=>start('dessert'));
+$('allfoods').addEventListener('click',()=>start('all'));
+$('undo').addEventListener('click',()=>{if(busy||!hist.length)return;S=JSON.parse(hist.pop());L=MODES[S.mode].list;sfxScratch();fx(t=>slip(t+.2,true,.08));render()});
+$('restart').addEventListener('click',()=>{if(!busy){sfxScratch();start(S.mode,true)}});
+$('again').addEventListener('click',()=>start(S.mode,true));
+$('sfx').addEventListener('click',()=>{setSfx(!sfxOn);sfxPick()});
+$('home').addEventListener('click',()=>{busy=false;show('menu')});
+$('home2').addEventListener('click',()=>show('menu'));
+$('music').addEventListener('click',()=>setMusic(!musicOn));
+}
+</script>
+</body>
+</html>
